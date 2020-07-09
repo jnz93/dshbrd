@@ -264,25 +264,25 @@ class Uc_Dshbrd_Admin {
 					<!-- /End add products, services and customer -->
 
 					<div class="col-7">
-						<div id="new_order_data" class="col-12 card">
+						<div id="new_order_data" class="col-12 card mb-4">
 							<h4 class="mb-4">Dados do pedido - #001</h4>
 
 							<div id="order_products" class="">
 								<table class="table">
 									<thead>
 										<tr>
-											<th scope="col">Produtos(s)</th>
-											<th scope="col">Ref.</th>
 											<th scope="col">Qtd.</th>
+											<th scope="col">Nome</th>
+											<th scope="col">Ref.</th>
 											<th scope="col">Val. Unit.</th>
 											<th scope="col">Val. Total</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<th scope="row">Cabo áudio e vídeo 3RCA Macho x 3RCA...</th>
-											<td>7899600916131</td>
 											<td>1</td>
+											<td>Cabo áudio e vídeo 3RCA Macho x 3RCA...</td>
+											<td>7899600916131</td>
 											<td>R$20,00</td>
 											<td>R$20,00</td>
 										</tr>
@@ -295,8 +295,8 @@ class Uc_Dshbrd_Admin {
 								<table class="table">
 									<thead>
 										<tr>
-											<th scope="col">Serviços(s)</th>
 											<th scope="col">Qtd.</th>
+											<th scope="col">Serviços(s)</th>
 											<th scope="col">Unid.</th>
 											<th scope="col">Val. Unit.</th>
 											<th scope="col">Val. Total</th>
@@ -304,8 +304,8 @@ class Uc_Dshbrd_Admin {
 									</thead>
 									<tbody>
 										<tr>
-											<th scope="row">Formatação/Instalação windows 7|8|10 S/ BKP</th>
 											<td>1</td>
+											<td>Formatação/Instalação windows 7|8|10 S/ BKP</td>
 											<td>SR</td>
 											<td>R$65,00</td>
 											<td>R$65,00</td>
@@ -315,30 +315,32 @@ class Uc_Dshbrd_Admin {
 							</div>
 							<!-- /End #order_services -->
 
-							<div class="wrapper__totals">
-								<div class="">
-									<img src="" alt="">
-									<span>Total em produtos</span>
-									<h3>R$00,00</h3>
-								</div>
-								
-								<div class="">
-									<img src="" alt="">
-									<span>Total em serviços</span>
-									<h3>R$00,00</h3>
+							<div class="row">
+								<div class="col-4 row">
+									<div class="col-12">
+										<i class="fa fa-cart"></i>
+										<span>Total em produtos</span>
+										<h6>R$00,00</h6>
+									</div>
+									
+									<div class="col-12">
+										<i class="fa fa-cart"></i>
+										<span>Total em serviços</span>
+										<h6>R$00,00</h6>
+									</div>
 								</div>
 
-								<div class="">
-									<img src="" alt="">
+								<div class="col-4">
+									<i class="fa fa-cart"></i>
 									<span>Total</span>
-									<h3>R$00,00</h3>
+									<h4>R$00,00</h4>
 								</div>
 							</div>
 							<!-- /End totals -->
 						</div>
 						<!-- /End #new_order_data  -->
-						<button>Finalizar Compra</button>
-						<button>Cancelar</button>
+						<button class="btn btn-primary btn-lg">Finalizar Compra</button>
+						<button class="btn btn-danger">Cancelar</button>
 					</div>
 
 				</div>
@@ -483,6 +485,11 @@ class Uc_Dshbrd_Admin {
 		die();
 	}
 
+	/**
+	 * Function for add product to cart with quantity by ajax call
+	 * 
+	 * @since 1.0.0
+	 */
 	public function add_product_to_cart()
 	{
 		$product_id = $_POST['item_id'];
