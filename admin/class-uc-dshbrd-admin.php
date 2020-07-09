@@ -169,7 +169,7 @@ class Uc_Dshbrd_Admin {
 				
 				<div id="new_order" class="row">
 
-					<div class="col-6">
+					<div class="col-5">
 						<div id="select_action" class="">
 							<span class="">
 								<input type="radio" id="order_product" name="order_product" value="" checked>
@@ -201,7 +201,7 @@ class Uc_Dshbrd_Admin {
 										<input type="number" id="" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
 									</div>
 
-									<button type="button" id="" class="btn btn-primary btn-lg btn-block">Adicionar Item</button>
+									<!-- <button type="button" id="" class="btn btn-primary btn-lg btn-block">Adicionar Item</button> -->
 								</div>
 							</form>
 							<!-- /End #add_product -->
@@ -261,10 +261,11 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End #wrapper_results -->
 					</div>
+					<!-- /End add products, services and customer -->
 
-					<div class="col-6 d-none">
+					<div class="col-7">
 						<div id="new_order_data" class="col-12 card">
-							<h3>Dados do pedido</h3>
+							<h4 class="mb-4">Dados do pedido - #001</h4>
 
 							<div id="order_products" class="">
 								<table class="table">
@@ -401,6 +402,17 @@ class Uc_Dshbrd_Admin {
 			's'				=> $s,
 		);
 
+		$args_meta = array(
+			'post_type'		=> 'product',
+			'meta_query'	=> array(
+				array(
+					'key'		=> '_sku',
+					'value'		=> $s
+				),
+			),
+		);
+
+		// $query = new WP_Query($args);
 		$query = new WP_Query($args);
 
 		if ($query->have_posts()) :
@@ -438,6 +450,7 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End Informations -->
 					</div>
+					<button type="button" id="" class="btn btn-primary btn-lg btn-block">Adicionar ao Carrinho</button>
 				</div>
 				<!-- /End template card product item -->
 				<?php
