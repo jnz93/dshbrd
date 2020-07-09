@@ -55,8 +55,8 @@ class Uc_Dshbrd_Admin {
 		add_action('admin_menu', array($this, 'register_menu_admin_area'));
 
 		# REGISTERING AJAX ACTIONS
-        add_action('wp_ajax_product_by_name_or_ref', array($this, 'product_by_name_or_ref')); // executed when logged in
-        // add_action('wp_ajax_nopriv_render_template_boleto', array($this, 'ProxyMp::render_template_boleto')); // executed when logged out
+		add_action('wp_ajax_product_by_name_or_ref', array($this, 'product_by_name_or_ref')); // executed when logged in
+		add_action('wp_ajax_add_product_to_cart', array($this, 'add_product_to_cart')); // Executed whe logged in
 	}
 
 	/**
@@ -198,7 +198,7 @@ class Uc_Dshbrd_Admin {
 
 									<div class="form-group row col-12">
 										<label class="form-check-label col-3" for="item_qty">Quantidade</label>
-										<input type="number" id="" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
+										<input type="number" id="item_qty" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
 									</div>
 
 									<!-- <button type="button" id="" class="btn btn-primary btn-lg btn-block">Adicionar Item</button> -->
@@ -382,9 +382,9 @@ class Uc_Dshbrd_Admin {
 	}
 
 	/**
-	 * Action for search product by ID, name or REF. This function is called by json requisition;
+	 * Action for search product by name or REF. This function is called by json requisition;
 	 * 
-	 * @param $string = id, name or ref;
+	 * @param $string = name or ref;
 	 * @since 1.0.0
 	 */
 	public function product_by_name_or_ref($string)
@@ -426,7 +426,7 @@ class Uc_Dshbrd_Admin {
 				$stock 			= get_post_meta($id, '_stock_status', true);
 				$ref 			= get_post_meta($id, '_sku', true);
 				?>
-				<div class="col-12 card">
+				<div class="col-12 card" product-id="<?php echo $id; ?>">
 					<div class="row">
 						<div class="col-3">
 							<?php echo $thumb; ?>
@@ -450,7 +450,26 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End Informations -->
 					</div>
-					<button type="button" id="" class="btn btn-primary btn-lg btn-block">Adicionar ao Carrinho</button>
+					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery('#item_qty').val())">Adicionar ao Carrinho</button>
+
+					<!-- Ajax for add to cart -->
+					<script type="text/javascript">
+						function add_to_cart(id, qtd)
+						{
+							jQuery.ajax({
+								type: 'POST',
+								url: '<?php echo admin_url('admin-ajax.php'); ?>',
+								data: {
+									action: 'add_product_to_cart',
+									item_id: id,
+									item_qtd: qtd,
+								},
+								success: function(data){
+									console.log(data);
+								}
+							});
+						}
+					</script>
 				</div>
 				<!-- /End template card product item -->
 				<?php
@@ -461,6 +480,26 @@ class Uc_Dshbrd_Admin {
 		endif;
 		
 		// End json call
+		die();
+	}
+
+	public function add_product_to_cart()
+	{
+		$product_id = $_POST['item_id'];
+		$product_qtd = (int) $_POST['item_qtd'];
+
+		if (empty($product_id)) :
+			echo 'Erro: ID do produto não informado';
+			exit();
+		endif;
+
+		if (empty($product_qtd) || $product_qtd < 1 ) :
+			echo 'Erro: Quantidade inválida ou menor que 1.';
+			exit();
+		endif;
+
+		WC()->cart->add_to_cart($product_id, $product_qtd);
+		echo 'item adicionado com successo';
 		die();
 	}
 }
