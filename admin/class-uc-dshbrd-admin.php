@@ -103,6 +103,7 @@ class Uc_Dshbrd_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/uc-dshbrd-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'awesome-icons', 'https://kit.fontawesome.com/f18f521cf8.js', array(), $this->version, false);
 
 	}
 
@@ -315,25 +316,39 @@ class Uc_Dshbrd_Admin {
 							</div>
 							<!-- /End #order_services -->
 
-							<div class="row">
-								<div class="col-4 row">
-									<div class="col-12">
-										<i class="fa fa-cart"></i>
-										<span>Total em produtos</span>
-										<h6>R$00,00</h6>
+							<div class="d-flex justify-content-end">
+								<div class="col-4 d-flex-column">
+									<div class="d-flex col-12 mb-2">
+										<div class="d-flex col-3 bg-info align-items-center justify-content-center p-0">
+											<i class="text-white fas fa-microchip" style="font-size: 1.4em;"></i>
+										</div>
+										<div class="col-9 d-flex-column">
+											<span style="font-size: .8em;">Total em produtos</span>
+											<h6 id="total_products">R$00,00</h6>
+										</div>
 									</div>
+									<!-- /End total products -->
 									
-									<div class="col-12">
-										<i class="fa fa-cart"></i>
-										<span>Total em serviços</span>
-										<h6>R$00,00</h6>
+									<div class="d-flex col-12">
+										<div class="d-flex col-3 bg-info align-items-center justify-content-center p-0">
+											<i class="text-white fas fa-briefcase" style="font-size: 1.4em;"></i>
+										</div>
+										<div class="col-9 d-flex-column">
+											<span style="font-size: .8em;">Total em serviços</span>
+											<h6 id="total_services">R$00,00</h6>
+										</div>
 									</div>
+									<!-- /End total services -->
 								</div>
 
-								<div class="col-4">
-									<i class="fa fa-cart"></i>
-									<span>Total</span>
-									<h4>R$00,00</h4>
+								<div class="d-flex col-4">
+									<div class="d-flex col-3 bg-danger align-items-center justify-content-center p-0">
+										<i class="text-white fas fa-shopping-cart" style="font-size: 1.4em;"></i>
+									</div>
+									<div class="col-9 d-flex-column justify-content-center">
+										<span style="font-size: .8em">Total</span>
+										<h4 id="total_cart">R$00,00</h4>
+									</div>
 								</div>
 							</div>
 							<!-- /End totals -->
@@ -414,8 +429,8 @@ class Uc_Dshbrd_Admin {
 			),
 		);
 
-		// $query = new WP_Query($args);
 		$query = new WP_Query($args);
+		// $query = new WP_Query($args_meta);
 
 		if ($query->have_posts()) :
 			while($query->have_posts()) :
