@@ -56,4 +56,30 @@
 		})
 	}
 
+
+	/**
+	 * Add item to work order
+	 * 
+	 * Após o retorno de sucesso da função ajax que adiciona o item ao carrinho essa função adiciona o item a ordem de serviço.
+	 * @param {*} id 
+	 * @param {*} name 
+	 * @param {*} ref 
+	 * @param {*} qty 
+	 * @param {*} valUnt 
+	 */
+	function add_item_to_order(id, name, ref,  qty, valUnt)
+	{
+		var id = id,
+			name = name,
+			ref = ref,
+			qty = qty,
+			valUnt = valUnt;
+
+		let itemToAdd = '<tr><td>'+ id +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>R$'+ valUnt +'</td><td>R$65,00</td></tr>';
+		let tableToAdd = jQuery('#order_products > table > tbody').append(itemToAdd);
+
+		console.log(id + ' - ' + name + ' - ' + ref  + ' - ' + qty + ' - ' + valUnt + '</br>');
+		console.log(itemToAdd);
+	}
+
 })( jQuery );

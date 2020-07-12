@@ -54,6 +54,10 @@ class Uc_Dshbrd_Admin {
 
 		add_action('admin_menu', array($this, 'register_menu_admin_area'));
 
+
+		# CUSTOM TAXONOMIES
+		add_action('init', array($this, 'customer_custom_category_product'));
+
 		# REGISTERING AJAX ACTIONS
 		add_action('wp_ajax_product_by_name_or_ref', array($this, 'product_by_name_or_ref')); // executed when logged in
 		add_action('wp_ajax_add_product_to_cart', array($this, 'add_product_to_cart')); // Executed whe logged in
@@ -443,7 +447,7 @@ class Uc_Dshbrd_Admin {
 				$stock 			= get_post_meta($id, '_stock_status', true);
 				$ref 			= get_post_meta($id, '_sku', true);
 				?>
-				<div class="col-12 card" product-id="<?php echo $id; ?>">
+				<div class="col-12 card" product-id="<?php echo $id; ?>" product-name="<?php echo $title; ?>" product-ref="<?php echo $ref; ?>" product-price="<?php echo ($promo_price != '' ? $promo_price : $price); ?>">
 					<div class="row">
 						<div class="col-3">
 							<?php echo $thumb; ?>
@@ -479,7 +483,7 @@ class Uc_Dshbrd_Admin {
 								data: {
 									action: 'add_product_to_cart',
 									item_id: id,
-									item_qtd: qtd,
+									item_qtd: qty,
 								},
 								success: function(data){
 									console.log(data);
@@ -570,5 +574,26 @@ class Uc_Dshbrd_Admin {
 		WC()->cart->add_to_cart($product_id, $product_qtd);
 		echo 'item adicionado com successo';
 		die();
+	}
+
+
+	/**
+	 * Function customer custom category
+	 * 
+	 * Cada produto cadastrado deverá ser marcado com uma tag de produto ou serviço
+	 * @since 1.0.0
+	 */
+	public function customer_custom_category_product()
+	{
+		register_taxonomy(
+			'type-products',
+			'product',
+			array(
+				'label' => __( 'Type of Product' ),
+				'public' => true,
+				'rewrite' => array('slug' => 'type-of-product'),
+				'hierarchical' => false,
+			)
+		);
 	}
 }
