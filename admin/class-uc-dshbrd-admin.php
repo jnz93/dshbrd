@@ -467,11 +467,11 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End Informations -->
 					</div>
-					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery('#item_qty').val())">Adicionar ao Carrinho</button>
+					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'))">Adicionar ao Carrinho</button>
 
 					<!-- Ajax for add to cart -->
 					<script type="text/javascript">
-						function add_to_cart(id, qtd)
+						function add_to_cart(id, name, ref, qty, valUnt)
 						{
 							jQuery.ajax({
 								type: 'POST',
@@ -483,8 +483,55 @@ class Uc_Dshbrd_Admin {
 								},
 								success: function(data){
 									console.log(data);
+									add_item_to_order(id, name, ref, qty, valUnt);
 								}
 							});
+						}
+
+						/**
+						 * Add item to work order
+						 * 
+						 * Após o retorno de sucesso da função ajax que adiciona o item ao carrinho essa função adiciona o item a ordem de serviço.
+						 * @param {*} id 
+						 * @param {*} name 
+						 * @param {*} ref 
+						 * @param {*} qty 
+						 * @param {*} valUnt 
+						 */
+						function add_item_to_order(id, name, ref,  qty, valUnt)
+						{
+							var id = id,
+								name = name,
+								ref = ref,
+								qty = qty,
+								valUnt = valUnt;
+
+							let itemToAdd = '<tr><td>'+ id +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ price_item(qty, valUnt) +'</td></tr>';
+							let tableToAdd = jQuery('#order_products > table > tbody').append(itemToAdd);
+
+							console.log(id + ' - ' + name + ' - ' + ref  + ' - ' + qty + ' - ' + valUnt + '</br>');
+							console.log(itemToAdd);
+						}
+
+
+						/**
+						 * Add item to work order
+						 * 
+						 * Após o retorno de sucesso da função ajax que adiciona o item ao carrinho essa função adiciona o item a ordem de serviço.
+						 * @param {*} id 
+						 * @param {*} name 
+						 * @param {*} ref 
+						 * @param {*} qty 
+						 * @param {*} valUnt 
+						 */
+						function price_item(qty, valUnt)
+						{
+							var qty = qty,
+								valUnt = valUnt;
+
+							let total = (valUnt * qty);
+
+							return total.toLocaleString('pt-br', {minimunFractionDigits: 2});
 						}
 					</script>
 				</div>
