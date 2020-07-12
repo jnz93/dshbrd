@@ -61,6 +61,9 @@ class Uc_Dshbrd_Admin {
 		# REGISTERING AJAX ACTIONS
 		add_action('wp_ajax_product_by_name_or_ref', array($this, 'product_by_name_or_ref')); // executed when logged in
 		add_action('wp_ajax_add_product_to_cart', array($this, 'add_product_to_cart')); // Executed whe logged in
+
+		# ADD SHORTCODES
+		add_shortcode('apply_backup_services', array($this, 'apply_backup_services_from_list'));
 	}
 
 	/**
@@ -595,5 +598,171 @@ class Uc_Dshbrd_Admin {
 				'hierarchical' => false,
 			)
 		);
+	}
+
+
+	/**
+	 * Function All services to products stock
+	 * 
+	 * Função para adicionar os serviços e respectivos preços como produtos
+	 * 
+	 * @since 1.0.0
+	 */
+	public function apply_backup_services_from_list()
+	{
+		// serviços
+		$services = '002/001 - [MAN. IMPRESSORA HP 1020[ SR 48,95 -|- 
+			002/002 - [MAN. IMPRESSORA BROTHER DCP L2540DW[ SR 67,31 -|- 
+			002/003 - [MAN. IMPRESSORA BROTHER HL L2320D[ SR 67,31 -|- 
+			002/004 - [MAN. IMPRESSORA EPSON FX 2190[ SR 67,31 -|- 
+			002/005 - [MAN. IMPRESSORA EPSON L220[ SR 67,31 -|- 
+			002/006 - [MAN. IMPRESSORA EPSON L3110[ SR 67,31 -|- 
+			002/007 - [MAN. IMPRESSORA L380[ SR 67,31 -|- 
+			002/008 - [MAN. IMPRESSORA EPSON L395[ SR 67,31 -|- 
+			002/009 - [MAN. IMPRESSORA EPSON LX-300+II[ SR 67,30 -|- 
+			002/010 - [MAN. IMPRESSORA HP 1022[ SR 67,30 -|- 
+			002/011 - [MAN IMPRESSORA HP 1102[ SR 61,19 -|- 
+			002/012 - [MAN. IMPRESSORA HP 4500[ SR 67,30 -|- 
+			002/013 - [MAN. IMPRESSORA HP 4630[ SR 67,30 -|- 
+			002/014 - [MAN. IMPRESSORA HP D1560[ SR 61,18 -|- 
+			002/015 - [MAN. IMPRESSORA HP DESINGJET T120[ SR 152,97 -|- 
+			002/016 - [MAN. IMPRESSORA HP DESKJET 2050[ SR 55,07 -|- 
+			002/017 - [MAN. IMPRESSORA HP DESKJET 3050[ SR 55,07 -|- 
+			002/018 - [MAN. IMPRESSORA HP LASERJET P1102W[ SR 73,42 -|- 
+			002/019 - [MAN IMPRESSORA HP LASERJETPRO M102W[ SR 79,54 -|- 
+			002/020 - [MAN. IMPRESSORA HP PRO M127FN[ SR 97,90 -|-
+			002/021 - [MAN. IMPRESSORA LEXMARK MX310DN[ SR 122,37 -|-
+			002/022 - [MAN. IMPRESSORA MATRICIAL LX 300[ SR 122,37 -|-
+			002/023 - [MAN. IMPRESSORA PHASER 3200[ SR 91,78 -|-
+			002/024 - [MAN. IMPRESSORA SAMSUMG MC 2851ND[ SR 91,78 -|-
+			002/025 - [MAN. IMPRESSORA SAMSUNG SCX 4623F[ SR 110,14 -|-
+			[Ativação do Windows 7/8.1/10[ Sr 35,00 -|-
+			[Ativação Microsoft Office[ Sr 35,00 -|-
+			[Atualização em Xbox 360[ Sr 50,00 -|-
+			[CONFIGURAÇÃO CAMERA DE LAMPADA[ SR 35,00 -|-
+			[Configuração da BIOS[ Sr 35,00 -|-
+			[Configuração de Mikrotik e Switch[ Sr 250,00 -|-
+			[Configuração de rede para cada Computador[ Sr 35,00 -|-
+			[Conserto de impressora (limpeza, manu. e repa[ Sr 100,00 -|-
+			[Conserto de No-breaks simples - Ñ inclu. peça[ Sr 65,00 -|-
+			[Contrato de manutenção mensal (por PC)[ Sr 80,00 -|-
+			[Deslocamento até o cliente dentro da cidade[ Km 1,00 -|-
+			[Deslocamento até o cliente fora da cidade[ Km 1,50 -|-
+			[Formatação/Instalação Windows 7|8.1|10 c/ BKP[ Sr 80,00 -|- 
+			[Formatação/Instalação Windows 7|8.1|10 s/ BKP[ Sr 65,00 -|- 
+			[Hora técnica simples[ Hs 30,00 -|- 
+			[Instalação Avasta PRO - Licença de 01 ano.[ Sr 60,00 -|- 
+			[Instalação de Hardware - Peças[ Sr 35,00 -|- 
+			[Instalação de Impressora[ Sr 35,00 -|- 
+			[Instalação de Softwares[ Sr 50,00 -|- 
+			[Instalação do Pacote Microsoft Office[ Sr 35,00 -|- 
+			[Instalação e Configuração de um Programa[ Sr 65,00 -|- 
+			[Instalação/Configuração Windows Server[ Sr 300,00 -|- 
+			[Limpeza completa impressora HP[ Sr 170,00 -|- 
+			[Limpeza Impressora HP LaseJet Pro M102W[ Sr 50,00 -|- 
+			[Limpeza Interna c/ troca de pasta termica[ Sr 100,00 -|- 
+			[Limpeza Memoria Ram[ Sr 35,00 -|- 
+			[Limpeza preventiva[ Sr 80,00 -|- 
+			[Orçamento de conserto balcão[ Sr 0,00 -|- 
+			[Otimização de Sistema Operacional[ Sr 50,00 -|- 
+			[Recarga Cartucho HP 122XL - Preto[ Sr 25,00 -|- 
+			[Recarga Cartucho HP 901 Colorido[ Sr 25,00 -|- 
+			[Recuperação de Dados (por hora)[ Hs 10,00 -|- 
+			[Recuperação de Dados de HD (para cada GB)[ Hs 1,50 -|- 
+			[Recuperação de dados simples (para cada GB)[ Sr 1,50 -|- 
+			[Recuperação Sistema Operacional[ Sr 50,00 -|- 
+			[Remoção de vírus sem formatação[ Sr 60,00 -|- 
+			[Remoção do vírus, spyware, malware e adware[ Sr 60,00 -|- 
+			[Reparo Basico Impressora[ Sr 50,00 -|- 
+			[Reparo completo HP LaserJet P1102W[ Sr 100,00 -|- 
+			[Reparo completo HP OfficeJet 4500[ Sr 50,00 -|- 
+			[Reparo Conector[ Sr 50,00 -|- 
+			[Reparo do sistema operacional[ Sr 50,00 -|- 
+			[Reparo e Limpeza Impressora Epson L355[ Sr 180,00 -|- 
+			[Reparo e Troca de Tela LCD e Led Originais[ Sr 120,00 -|- 
+			[Reparo e/ou troca de Cooler[ Sr 35,00 -|- 
+			[Reparo em Playstation 2[ Sr 35,00 -|- 
+			[Restauração de Software Android, IOS.[ Sr 70,00 -|- 
+			[Serviços de Solda em Placa[ Sr 35,00 -|- 
+			[Suporte Técnico Remoto[ Hs 65,00 -|- 
+			[Troca bateria BIOS - Notebook[ Sr 50,00 -|- 
+			[Troca da Bateria[ Sr 70,00 -|- 
+			[Troca da pasta térmica[ Sr 35,00 -|- 
+			[Troca de Fonte[ Sr 35,00 -|- 
+			[Troca de HD, Memória, Bateria e Placa Mãe[ Sr 60,00 -|- 
+			[Troca de Teclados Originais[ Sr 100,00 -|- 
+			[Troca de Tela Original[ Sr 35,00 -|- 
+			[Troca de Tela Original Smartphone LG K10[ Sr 200,00 -|- 
+			[Troca do Conector de carga[ Sr 60,00 -|- 
+			[Troca Drivers Ópticos - (DVD, CD, BluRay)[ Sr 50,00 -|- 
+			[Upgrade, Memória, HDD, Processador[ Sr 100,00 -|- 
+			[Visita técnica complexa[ Hs 120,00';
+		
+		$list_of_services = explode('-|-', $services);
+
+		$count = 1;
+		$ref_pattern = 'SR';
+		foreach ($list_of_services as $service)
+		{
+			// Sanitize service data
+			$break_service 			= explode('[', $service);
+			$service_name 			= $break_service[1];
+
+			$break_service_price 	= explode(' ', $break_service[2]);
+			$service_und 			= $break_service_price[1];
+			$service_price 			= $break_service_price[2];
+			$service_ref 			= $ref_pattern . '-' . $count;
+
+			// Create post
+			$post = array(
+				'post_author' => get_current_user_id(),
+				'post_content' => '',
+				'post_status' => "publish",
+				'post_title' => $service_name,
+				'post_parent' => '',
+				'post_type' => "product",
+			);
+			$post_id = wp_insert_post( $post, $wp_error );
+
+			// Update meta
+			if ($post_id) :
+				update_post_meta( $post_id, '_visibility', 'visible' );
+				update_post_meta( $post_id, '_stock_status', 'instock');
+				update_post_meta( $post_id, 'total_sales', '0');
+				update_post_meta( $post_id, '_downloadable', 'no');
+				update_post_meta( $post_id, '_virtual', 'no');
+				update_post_meta( $post_id, '_regular_price', $service_price );
+				update_post_meta( $post_id, '_sale_price', '' );
+				update_post_meta( $post_id, '_purchase_note', "" );
+				update_post_meta( $post_id, '_featured', "no" );
+				update_post_meta( $post_id, '_weight', "" );
+				update_post_meta( $post_id, '_length', "" );
+				update_post_meta( $post_id, '_width', "" );
+				update_post_meta( $post_id, '_height', "" );
+				update_post_meta( $post_id, '_sku', $service_ref);
+				update_post_meta( $post_id, '_product_attributes', array());
+				update_post_meta( $post_id, '_sale_price_dates_from', "" );
+				update_post_meta( $post_id, '_sale_price_dates_to', "" );
+				update_post_meta( $post_id, '_price', '' );
+				update_post_meta( $post_id, '_sold_individually', "" );
+				update_post_meta( $post_id, '_manage_stock', "no" );
+				update_post_meta( $post_id, '_backorders', "no" );
+				update_post_meta( $post_id, '_stock', "" );
+				update_post_meta( $post_id, '_service_und', $service_und);
+
+				// Set tax
+				wp_set_object_terms( $post_id, 'Serviço', 'type-products' );
+
+				// Log de sucesso
+				echo 'REF: ' . $service_ref . ' - NOME: ' . $service_name . ' - UND: ' . $service_und . ' - VALOR: ' . $service_price . '</br>';
+			
+			else :
+				
+				echo 'Houve um erro e o serviço "'. $service_name .'" não foi cadastrado.';
+
+			endif;
+
+			$count++;
+		}
 	}
 }
