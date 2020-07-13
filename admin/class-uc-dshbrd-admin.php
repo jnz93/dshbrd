@@ -111,6 +111,7 @@ class Uc_Dshbrd_Admin {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/uc-dshbrd-admin.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'awesome-icons', 'https://kit.fontawesome.com/f18f521cf8.js', array(), $this->version, false);
+		wp_enqueue_script( 'bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js', array(), $this->version, false);
 
 	}
 
@@ -134,7 +135,7 @@ class Uc_Dshbrd_Admin {
 		?>
 		<div class="">
 			
-			<header class="">
+			<header class="d-none">
 				<ul class="row">
 					<li><a href="">Todos os pedidos</a></li>
 					<li><a href="">Novo pedido</a></li>
@@ -177,93 +178,103 @@ class Uc_Dshbrd_Admin {
 				
 				<div id="new_order" class="row">
 
-					<div class="col-5">
-						<div id="select_action" class="">
-							<span class="">
-								<input type="radio" id="order_product" name="order_product" value="" checked>
-								<label for="order_product">Produto</label>
-							</span>
-							<span class="">
-								<input type="radio" id="order_service" name="order_service" value="">
-								<label for="order_service">Serviço</label>
-							</span>
-							<span class="">
-								<input type="radio" id="order_client" name="order_client" value="">
-								<label for="order_client">Dados do cliente</label>
-							</span>
-						</div>
+					<div class="col-5 mt-4 card">
+						<nav>
+							<ul class="nav nav-pills mb-3" id="nav-tab" role="tablist">
+								<li class="nav-item" role="presentation">
+									<a class="nav-link active" id="order-product" data-toggle="pill" href="#search-product" role="tab" aria-controls="search-product" aria-selected="true">Produtos</a>
+								</li>
+								<li class="nav-item" role="presentation">
+									<a class="nav-link" id="order-service" data-toggle="pill" href="#search-service" role="tab" aria-controls="search-service" aria-selected="false">Serviços</a>
+								</li>
+								<li class="nav-item" role="presentation">
+									<a class="nav-link" id="order-customer" data-toggle="pill" href="#search-costumer" role="tab" aria-controls="search-costumer" aria-selected="false">Cliente</a>
+								</li>
+							</ul>
+						</nav>
 						<!-- /End #select_action -->
 
-						<div id="new_order_insert_data" class="col-12 card">
+						<div class="tab-content" id="nav-tabContent">
+							<div id="search-product" class="tab-pane fade show active" role="tabpanel" aria-labelledby="order-product-tab">
 
-							<h4 class="mb-4">Adicionar Produto(s)</h4>
-							<form id="add_product" action="">
-								<div class="form-row">
-									<div class="form-group row col-12">
-										<label class="form-check-label col-3" for="name_ref">Nome do produto / Ref.</label>
-										<input type="text" id="name_ref" name="name_ref" class="form-control col-9" onkeyup="looking_for_product(this.value)" placeholder="Digite o nome ou código de barras para procurar">
+								<h4 class="mb-4">Adicionar Produto(s)</h4>
+								<form id="add_product" action="">
+									<div class="form-row">
+										<div class="form-group row col-12">
+											<label class="form-check-label col-3" for="name_ref">Nome do produto / Ref.</label>
+											<input type="text" id="name_ref" name="name_ref" class="form-control col-9" onkeyup="looking_for_product(this.value)" placeholder="Digite o nome ou código de barras para procurar">
+										</div>
+
+										<div class="form-group row col-12">
+											<label class="form-check-label col-3" for="item_qty">Quantidade</label>
+											<input type="number" id="item_qty" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
+										</div>
+
+										<!-- <button type="button" id="" class="btn btn-primary btn-lg btn-block">Adicionar Item</button> -->
+									</div>
+								</form>
+								<!-- /End #add_product -->
+
+							</div>
+							<!-- /End #new_order_insert_data -->
+
+							<div id="search-service" class="tab-pane fade" role="tabpanel" aria-labelledby="order-service-tab">
+
+								<h3>Adicionar Serviço(s)</h3>
+								<form id="add_service" action="">
+
+									<div class="">
+										<label for="name_ref">Nome do serviço / Ref.</label>
+										<input type="text" id="" name="name_ref" class="" placeholder="Digite o nome ou código para procurar">
 									</div>
 
-									<div class="form-group row col-12">
-										<label class="form-check-label col-3" for="item_qty">Quantidade</label>
-										<input type="number" id="item_qty" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
+									<div class="">
+										<label for="item_qty">Quantidade</label>
+										<input type="number" id="" name="item_qty" class="" placeholder="1 - 10" value="1">
 									</div>
 
-									<!-- <button type="button" id="" class="btn btn-primary btn-lg btn-block">Adicionar Item</button> -->
-								</div>
-							</form>
-							<!-- /End #add_product -->
+									<div class="">
+										<label for="technician">Técnico Responsável</label>
+										<select name="technician" id="technician">
+											<option value="">Selecione uma opção</option>
+											<option value="gabriel-cupini">Gabriel Cupini</option>
+											<option value="everton-cupini">Everton Cupini</option>
+											<option value="outro">Outro</option>
+										</select>
+									</div>
 
+									<button id="" class="">Adicionar Item</button>
+								</form>
+								<!-- /End #add_service -->
+
+							</div>
+							<!-- /End #new_order_insert_service -->
+
+							<div id="search-costumer" class="tab-pane fade" role="tabpanel" aria-labelledby="order-customer-tab">
+
+								<h3>Procurar Cliente</h3>
+								<form id="add_customer_to_order" action="">
+
+									<div class="">
+										<label for="customer_name">Nome / Ref.</label>
+										<input type="text" id="customer_name" name="customer_name" class="" placeholder="Digite o nome ou CPF">
+									</div>
+								</form>
+								<!-- /End #add_customer_to_order -->
+								<button id="" class="">Adicionar ao Pedido</button>
+							</div>
+							<!-- /End #new_order_insert_customer -->
 						</div>
-						<!-- /End #new_order_insert_data -->
 
-						<div id="new_order_insert_service" class="d-none col-12 card">
-
-							<h3>Adicionar Serviço(s)</h3>
-							<form id="add_service" action="">
-
-								<div class="">
-									<label for="name_ref">Nome do serviço / Ref.</label>
-									<input type="text" id="" name="name_ref" class="" placeholder="Digite o nome ou código para procurar">
-								</div>
-
-								<div class="">
-									<label for="item_qty">Quantidade</label>
-									<input type="number" id="" name="item_qty" class="" placeholder="1 - 10" value="1">
-								</div>
-
-								<div class="">
-									<label for="technician">Técnico Responsável</label>
-									<select name="technician" id="technician">
-										<option value="">Selecione uma opção</option>
-										<option value="gabriel-cupini">Gabriel Cupini</option>
-										<option value="everton-cupini">Everton Cupini</option>
-										<option value="outro">Outro</option>
-									</select>
-								</div>
-
-								<button id="" class="">Adicionar Item</button>
-							</form>
-							<!-- /End #add_service -->
-
-						</div>
-						<!-- /End #new_order_insert_service -->
-
-						<div id="new_order_insert_customer" class="d-none col-12 card">
-
-							<h3>Procurar Cliente</h3>
-							<form id="add_customer_to_order" action="">
-
-								<div class="">
-									<label for="customer_name">Nome / Ref.</label>
-									<input type="text" id="customer_name" name="customer_name" class="" placeholder="Digite o nome ou CPF">
-								</div>
-							</form>
-							<!-- /End #add_customer_to_order -->
-							<button id="" class="">Adicionar ao Pedido</button>
-						</div>
-						<!-- /End #new_order_insert_customer -->
-
+						<script type="text/javascript">
+						jQuery(document).ready(function()
+						{
+							jQuery('#nav-tab a').on('click', function (e) {
+								e.preventDefault()
+								jQuery(this).tab('show')
+							})
+						})
+						</script>
 						<div id="wrapper_results" class="">
 
 						</div>
@@ -604,7 +615,7 @@ class Uc_Dshbrd_Admin {
 	/**
 	 * Function All services to products stock
 	 * 
-	 * Função para adicionar os serviços e respectivos preços como produtos
+	 * Função para adicionar os serviços e respectivos preços como produtos da lista enviada pelo cliente
 	 * 
 	 * @since 1.0.0
 	 */
