@@ -220,30 +220,31 @@ class Uc_Dshbrd_Admin {
 
 							<div id="search-service" class="tab-pane fade" role="tabpanel" aria-labelledby="order-service-tab">
 
-								<h3>Adicionar Serviço(s)</h3>
+								<h4>Adicionar Serviço(s)</h4>
 								<form id="add_service" action="">
+									<div class="form-row">
+										<div class="form-group row col-12">
+											<label for="name_ref" class="form-check-label col-3">Nome do serviço / Ref.</label>
+											<input type="text" id="" name="name_ref" class="form-control col-9" placeholder="Digite o nome ou código para procurar">
+										</div>
 
-									<div class="">
-										<label for="name_ref">Nome do serviço / Ref.</label>
-										<input type="text" id="" name="name_ref" class="" placeholder="Digite o nome ou código para procurar">
+										<div class="form-group row col-12">
+											<label for="item_qty" class="form-check-label col-3">Quantidade</label>
+											<input type="number" id="" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
+										</div>
+
+										<div class="form-group row col-12">
+											<label for="technician" class="form-check-label col-3">Técnico Responsável</label>
+											<select name="technician" id="technician" class="form-control col-9">
+												<option value="">Selecione uma opção</option>
+												<option value="gabriel-cupini">Gabriel Cupini</option>
+												<option value="everton-cupini">Everton Cupini</option>
+												<option value="outro">Outro</option>
+											</select>
+										</div>
+
+										<button id="" class="btn btn-primary">Adicionar Item</button>
 									</div>
-
-									<div class="">
-										<label for="item_qty">Quantidade</label>
-										<input type="number" id="" name="item_qty" class="" placeholder="1 - 10" value="1">
-									</div>
-
-									<div class="">
-										<label for="technician">Técnico Responsável</label>
-										<select name="technician" id="technician">
-											<option value="">Selecione uma opção</option>
-											<option value="gabriel-cupini">Gabriel Cupini</option>
-											<option value="everton-cupini">Everton Cupini</option>
-											<option value="outro">Outro</option>
-										</select>
-									</div>
-
-									<button id="" class="">Adicionar Item</button>
 								</form>
 								<!-- /End #add_service -->
 
@@ -252,16 +253,17 @@ class Uc_Dshbrd_Admin {
 
 							<div id="search-costumer" class="tab-pane fade" role="tabpanel" aria-labelledby="order-customer-tab">
 
-								<h3>Procurar Cliente</h3>
+								<h4>Procurar Cliente</h4>
 								<form id="add_customer_to_order" action="">
-
-									<div class="">
-										<label for="customer_name">Nome / Ref.</label>
-										<input type="text" id="customer_name" name="customer_name" class="" placeholder="Digite o nome ou CPF">
+									<div class="form-row">
+										<div class="form-group row col-12">
+											<label for="customer_name" class="form-check-label col-3">Nome / Ref.</label>
+											<input type="text" id="customer_name" name="customer_name" class="form-control col-9" placeholder="Digite o nome ou CPF">
+										</div>
 									</div>
 								</form>
 								<!-- /End #add_customer_to_order -->
-								<button id="" class="">Adicionar ao Pedido</button>
+								<button id="" class="btn btn-primary">Adicionar ao Pedido</button>
 							</div>
 							<!-- /End #new_order_insert_customer -->
 						</div>
