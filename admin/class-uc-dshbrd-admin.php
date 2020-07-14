@@ -60,6 +60,7 @@ class Uc_Dshbrd_Admin {
 
 		# REGISTERING AJAX ACTIONS
 		add_action('wp_ajax_product_by_name_or_ref', array($this, 'product_by_name_or_ref')); // executed when logged in
+		add_action('wp_ajax_service_by_name_or_ref', array($this, 'service_by_name_or_ref')); // executed when logged in
 		add_action('wp_ajax_add_product_to_cart', array($this, 'add_product_to_cart')); // Executed whe logged in
 
 		# ADD SHORTCODES
@@ -225,7 +226,7 @@ class Uc_Dshbrd_Admin {
 									<div class="form-row">
 										<div class="form-group row col-12">
 											<label for="name_ref" class="form-check-label col-3">Nome do serviço / Ref.</label>
-											<input type="text" id="" name="name_ref" class="form-control col-9" placeholder="Digite o nome ou código para procurar">
+											<input type="text" id="" name="name_ref" class="form-control col-9" onkeyup="looking_for_service(this.value)" placeholder="Digite o nome ou código para procurar">
 										</div>
 
 										<div class="form-group row col-12">
@@ -378,7 +379,8 @@ class Uc_Dshbrd_Admin {
 
 		<script type="text/javascript">
 		
-		function looking_for_product(value){
+		function looking_for_product(value)
+		{
 
 			var admin_url_ajax = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php";
 			var wrapper_results = jQuery('#wrapper_results');
@@ -402,7 +404,99 @@ class Uc_Dshbrd_Admin {
 					jQuery('div.lds-facebook').fadeOut();
 				}
 
-			})
+			});
+		}
+
+		function looking_for_service(value)
+		{
+			var wp_admin_ajax_url = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
+				wrapper_results = jQuery('#wrapper_results');
+
+			jQuery.ajax({
+				type: 'POST',
+				url: '<?php echo admin_url('admin-ajax.php'); ?>',
+				data: {
+					action: 'service_by_name_or_ref',
+					term: value,
+				},
+				beforeSend: function()
+				{
+					var loader = '<div class="lds-facebook"><div></div><div></div><div></div></div>';
+					wrapper_results.before(loader);
+				},
+				success: function(data)
+				{
+					wrapper_results.html(data);
+				},
+				complete: function()
+				{
+					jQuery('div.lds-facebook').fadeOut();
+				}
+			});
+		}
+
+		// Ajax for add to cart
+		function add_to_cart(id, name, ref, qty, valUnt)
+		{
+			jQuery.ajax({
+				type: 'POST',
+				url: '<?php echo admin_url('admin-ajax.php'); ?>',
+				data: {
+					action: 'add_product_to_cart',
+					item_id: id,
+					item_qtd: qty,
+				},
+				success: function(data){
+					console.log(data);
+					add_item_to_order(id, name, ref, qty, valUnt);
+				}
+			});
+		}
+
+		/**
+			* Add item to work order
+			* 
+			* Após o retorno de sucesso da função ajax que adiciona o item ao carrinho essa função adiciona o item a ordem de serviço.
+			* @param {*} id 
+			* @param {*} name 
+			* @param {*} ref 
+			* @param {*} qty 
+			* @param {*} valUnt 
+			*/
+		function add_item_to_order(id, name, ref,  qty, valUnt)
+		{
+			var id = id,
+				name = name,
+				ref = ref,
+				qty = qty,
+				valUnt = valUnt;
+
+			let itemToAdd = '<tr><td>'+ id +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ price_item(qty, valUnt) +'</td></tr>';
+			let tableToAdd = jQuery('#order_products > table > tbody').append(itemToAdd);
+
+			console.log(id + ' - ' + name + ' - ' + ref  + ' - ' + qty + ' - ' + valUnt + '</br>');
+			console.log(itemToAdd);
+		}
+
+
+		/**
+			* Add item to work order
+			* 
+			* Após o retorno de sucesso da função ajax que adiciona o item ao carrinho essa função adiciona o item a ordem de serviço.
+			* @param {*} id 
+			* @param {*} name 
+			* @param {*} ref 
+			* @param {*} qty 
+			* @param {*} valUnt 
+			*/
+		function price_item(qty, valUnt)
+		{
+			var qty = qty,
+				valUnt = valUnt;
+
+			let total = (valUnt * qty);
+
+			return total.toLocaleString('pt-br', {minimunFractionDigits: 2});
 		}
 		</script>
 		<!-- /End Container All Orders -->
@@ -410,7 +504,7 @@ class Uc_Dshbrd_Admin {
 	}
 
 	/**
-	 * Action for search product by name or REF. This function is called by json requisition;
+	 * Function for search product by name or REF. This function is called by json requisition;
 	 * 
 	 * @param $string = name or ref;
 	 * @since 1.0.0
@@ -488,72 +582,6 @@ class Uc_Dshbrd_Admin {
 						<!-- /End Informations -->
 					</div>
 					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'))">Adicionar ao Carrinho</button>
-
-					<!-- Ajax for add to cart -->
-					<script type="text/javascript">
-						function add_to_cart(id, name, ref, qty, valUnt)
-						{
-							jQuery.ajax({
-								type: 'POST',
-								url: '<?php echo admin_url('admin-ajax.php'); ?>',
-								data: {
-									action: 'add_product_to_cart',
-									item_id: id,
-									item_qtd: qty,
-								},
-								success: function(data){
-									console.log(data);
-									add_item_to_order(id, name, ref, qty, valUnt);
-								}
-							});
-						}
-
-						/**
-						 * Add item to work order
-						 * 
-						 * Após o retorno de sucesso da função ajax que adiciona o item ao carrinho essa função adiciona o item a ordem de serviço.
-						 * @param {*} id 
-						 * @param {*} name 
-						 * @param {*} ref 
-						 * @param {*} qty 
-						 * @param {*} valUnt 
-						 */
-						function add_item_to_order(id, name, ref,  qty, valUnt)
-						{
-							var id = id,
-								name = name,
-								ref = ref,
-								qty = qty,
-								valUnt = valUnt;
-
-							let itemToAdd = '<tr><td>'+ id +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ price_item(qty, valUnt) +'</td></tr>';
-							let tableToAdd = jQuery('#order_products > table > tbody').append(itemToAdd);
-
-							console.log(id + ' - ' + name + ' - ' + ref  + ' - ' + qty + ' - ' + valUnt + '</br>');
-							console.log(itemToAdd);
-						}
-
-
-						/**
-						 * Add item to work order
-						 * 
-						 * Após o retorno de sucesso da função ajax que adiciona o item ao carrinho essa função adiciona o item a ordem de serviço.
-						 * @param {*} id 
-						 * @param {*} name 
-						 * @param {*} ref 
-						 * @param {*} qty 
-						 * @param {*} valUnt 
-						 */
-						function price_item(qty, valUnt)
-						{
-							var qty = qty,
-								valUnt = valUnt;
-
-							let total = (valUnt * qty);
-
-							return total.toLocaleString('pt-br', {minimunFractionDigits: 2});
-						}
-					</script>
 				</div>
 				<!-- /End template card product item -->
 				<?php
@@ -566,6 +594,85 @@ class Uc_Dshbrd_Admin {
 		// End json call
 		die();
 	}
+
+	/**
+	 * Function service_by_name_or_ref
+	 * 
+	 * Essa ação é a resposta para uma requisição ajax
+	 * 
+	 * @since 1.0.0
+	 */
+	public function service_by_name_or_ref()
+	{
+		$term = $_POST['term'];
+		
+		if (empty($term)) :
+			echo 'Termo de busca não fornecido.';
+			exit();
+		endif;
+
+		$args = array(
+			'post_type'		=> 'product',
+			's'				=> $term,
+			'tax_query'		=> array(
+				'relation'	=> 'and',
+				array(
+					'taxonomy'		=> 'type-products',
+					'field'			=> 'slug',
+					'terms'			=> array('servico'),
+				),
+			),
+		);
+
+		$query = new WP_Query($args);
+
+		if ($query->have_posts()) :
+			while ($query->have_posts()) :
+				$query->the_post();
+				$id 			= get_the_ID();
+				$title 			= get_the_title($id);
+				$thumb 			= get_the_post_thumbnail($id, 'small', array('style' => 'width: 100%; height: 100%;'));
+				$price 			= get_post_meta($id, '_regular_price', true);
+				$promo_price 	= get_post_meta($id, '_sale_price', true);
+				$stock 			= get_post_meta($id, '_stock_status', true);
+				$ref 			= get_post_meta($id, '_sku', true);
+				?>
+				<div class="col-12 card" product-id="<?php echo $id; ?>" product-name="<?php echo $title; ?>" product-ref="<?php echo $ref; ?>" product-price="<?php echo ($promo_price != '' ? $promo_price : $price); ?>">
+					<div class="row">
+						<div class="col-3">
+							<?php echo $thumb; ?>
+						</div>
+						<!-- /End Thumb -->
+
+						<div class="col-9">
+							<div class="col-12 mb-4">
+								<h4><?php echo $title; ?></h4>
+							</div>
+							<div class="row align-middle">
+								<div class="col-4">
+									<h2 class=""><span class="badge badge-secondary mr-2"><?php echo 'R$' . $price ?></span></h2>
+								</div>
+								<div class="col-8">
+									<span class="badge badge-secondary mr-2"><?php echo $stock ?></span>
+									<span class="badge badge-secondary mr-2"><?php echo '#' . $id ?></span>
+									<span class="badge badge-secondary mr-2"><?php echo 'REF.' . $ref ?></span>
+								</div>
+							</div>
+						</div>
+						<!-- /End Informations -->
+					</div>
+					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'))">Adicionar ao Carrinho</button>
+				</div>
+				<?php
+			endwhile;
+
+		else :
+			echo 'Não encontramos nenhum item correspondente com a pesquisa.';			
+		endif;
+		
+		die();
+	}
+
 
 	/**
 	 * Function for add product to cart with quantity by ajax call
