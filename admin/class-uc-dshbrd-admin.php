@@ -268,15 +268,6 @@ class Uc_Dshbrd_Admin {
 							<!-- /End #new_order_insert_customer -->
 						</div>
 
-						<script type="text/javascript">
-						jQuery(document).ready(function()
-						{
-							jQuery('#nav-tab a').on('click', function (e) {
-								e.preventDefault()
-								jQuery(this).tab('show')
-							})
-						})
-						</script>
 						<div id="wrapper_results" class="">
 
 						</div>
@@ -437,6 +428,15 @@ class Uc_Dshbrd_Admin {
 		$args = array(
 			'post_type'		=> 'product',
 			's'				=> $s,
+			'tax_query'		=> array(
+				'relation'	=> 'and',
+				array(
+					'taxonomy'		=> 'type-products',
+					'field'			=> 'slug',
+					'terms'			=> array('servico'),
+					'operator'		=> 'NOT IN'
+				),
+			),
 		);
 
 		$args_meta = array(
