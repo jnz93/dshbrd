@@ -292,13 +292,7 @@ class Uc_Dshbrd_Admin {
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td>1</td>
-											<td>Cabo áudio e vídeo 3RCA Macho x 3RCA...</td>
-											<td>7899600916131</td>
-											<td>R$20,00</td>
-											<td>R$20,00</td>
-										</tr>
+										
 									</tbody>
 								</table>
 							</div>
@@ -316,13 +310,7 @@ class Uc_Dshbrd_Admin {
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td>1</td>
-											<td>Formatação/Instalação windows 7|8|10 S/ BKP</td>
-											<td>SR</td>
-											<td>R$65,00</td>
-											<td>R$65,00</td>
-										</tr>
+										
 									</tbody>
 								</table>
 							</div>
@@ -436,7 +424,7 @@ class Uc_Dshbrd_Admin {
 		}
 
 		// Ajax for add to cart
-		function add_to_cart(id, name, ref, qty, valUnt)
+		function add_to_cart(id, name, ref, qty, valUnt, itemType)
 		{
 			jQuery.ajax({
 				type: 'POST',
@@ -448,7 +436,7 @@ class Uc_Dshbrd_Admin {
 				},
 				success: function(data){
 					console.log(data);
-					add_item_to_order(id, name, ref, qty, valUnt);
+					add_item_to_order(id, name, ref, qty, valUnt, itemType);
 				}
 			});
 		}
@@ -463,16 +451,27 @@ class Uc_Dshbrd_Admin {
 			* @param {*} qty 
 			* @param {*} valUnt 
 			*/
-		function add_item_to_order(id, name, ref,  qty, valUnt)
+		function add_item_to_order(id, name, ref,  qty, valUnt, itemType)
 		{
 			var id = id,
 				name = name,
 				ref = ref,
 				qty = qty,
-				valUnt = valUnt;
+				valUnt = valUnt,
+				itemType = itemType;
 
-			let itemToAdd = '<tr><td>'+ id +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ price_item(qty, valUnt) +'</td></tr>';
-			let tableToAdd = jQuery('#order_products > table > tbody').append(itemToAdd);
+			let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ price_item(qty, valUnt) +'</td></tr>';
+
+			if (itemType == 'servico')
+			{
+				var tableToAdd = jQuery('#order_services > table > tbody');
+				tableToAdd.append(itemToAdd);
+			}
+			else
+			{
+				var tableToAdd = jQuery('#order_products > table > tbody');
+				tableToAdd.append(itemToAdd);
+			}
 
 			console.log(id + ' - ' + name + ' - ' + ref  + ' - ' + qty + ' - ' + valUnt + '</br>');
 			console.log(itemToAdd);
@@ -556,8 +555,15 @@ class Uc_Dshbrd_Admin {
 				$promo_price 	= get_post_meta($id, '_sale_price', true);
 				$stock 			= get_post_meta($id, '_stock_status', true);
 				$ref 			= get_post_meta($id, '_sku', true);
+				$item_type_name = '';
+				$item_type_slug = '';
+
+				foreach ($terms_of_type as $type) :
+					$item_type_name = $type->name;
+					$item_type_slug = $type->slug;
+				endforeach;
 				?>
-				<div class="col-12 card" product-id="<?php echo $id; ?>" product-name="<?php echo $title; ?>" product-ref="<?php echo $ref; ?>" product-price="<?php echo ($promo_price != '' ? $promo_price : $price); ?>">
+				<div class="col-12 card" product-id="<?php echo $id; ?>" product-name="<?php echo $title; ?>" product-ref="<?php echo $ref; ?>" product-price="<?php echo ($promo_price != '' ? $promo_price : $price); ?>" product-type="<?php echo (!empty($item_type_slug) ? $item_type_slug : 'produto' ) ?>">
 					<div class="row">
 						<div class="col-3">
 							<?php echo $thumb; ?>
@@ -581,7 +587,7 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End Informations -->
 					</div>
-					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'))">Adicionar ao Carrinho</button>
+					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'), jQuery(this).parent().attr('product-type'))">Adicionar ao Carrinho</button>
 				</div>
 				<!-- /End template card product item -->
 				<?php
@@ -636,8 +642,16 @@ class Uc_Dshbrd_Admin {
 				$promo_price 	= get_post_meta($id, '_sale_price', true);
 				$stock 			= get_post_meta($id, '_stock_status', true);
 				$ref 			= get_post_meta($id, '_sku', true);
+				$terms_of_type 	= get_the_terms($id, 'type-products');
+				$item_type_name = '';
+				$item_type_slug = '';
+
+				foreach ($terms_of_type as $type) :
+					$item_type_name = $type->name;
+					$item_type_slug = $type->slug;
+				endforeach;
 				?>
-				<div class="col-12 card" product-id="<?php echo $id; ?>" product-name="<?php echo $title; ?>" product-ref="<?php echo $ref; ?>" product-price="<?php echo ($promo_price != '' ? $promo_price : $price); ?>">
+				<div class="col-12 card" product-id="<?php echo $id; ?>" product-name="<?php echo $title; ?>" product-ref="<?php echo $ref; ?>" product-price="<?php echo ($promo_price != '' ? $promo_price : $price); ?>" product-type="<?php echo (!empty($item_type_slug) ? $item_type_slug : 'servico' ) ?>">
 					<div class="row">
 						<div class="col-3">
 							<?php echo $thumb; ?>
@@ -661,7 +675,7 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End Informations -->
 					</div>
-					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'))">Adicionar ao Carrinho</button>
+					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'), jQuery(this).parent().attr('product-type'))">Adicionar ao Carrinho</button>
 				</div>
 				<?php
 			endwhile;
