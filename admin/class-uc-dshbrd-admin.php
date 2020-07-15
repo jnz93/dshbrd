@@ -268,8 +268,13 @@ class Uc_Dshbrd_Admin {
 							</div>
 							<!-- /End #new_order_insert_customer -->
 						</div>
+						
+						<div class="flex-row d-flex justify-content-center">
+							<div id="lds-loader" class="lds-facebook position-absolute" style="display: none; z-index: 999;"><div></div><div></div><div></div></div>
+						</div>
+						<!-- /End loader -->
 
-						<div id="wrapper_results" class="">
+						<div id="wrapper_results" class="overflow-auto" style="height: 420px;">
 
 						</div>
 						<!-- /End #wrapper_results -->
@@ -370,8 +375,9 @@ class Uc_Dshbrd_Admin {
 		function looking_for_product(value)
 		{
 
-			var admin_url_ajax = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php";
-			var wrapper_results = jQuery('#wrapper_results');
+			var admin_url_ajax = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
+				wrapper_results = jQuery('#wrapper_results'),
+				loader = jQuery('#lds-loader');
 			jQuery.ajax({
 				type: 'POST',
 				url: '<?php echo admin_url('admin-ajax.php'); ?>',
@@ -381,15 +387,15 @@ class Uc_Dshbrd_Admin {
 				},
 				beforeSend: function()
 				{
-					var loader = '<div class="lds-facebook"><div></div><div></div><div></div></div>';
-					wrapper_results.before(loader);
+					loader = jQuery('#lds-loader')
+					loader.show().fadeIn();
 				},
 				success: function(data){
 					wrapper_results.html(data);
 				},
 				complete: function()
 				{
-					jQuery('div.lds-facebook').fadeOut();
+					loader.hide().fadeOut();
 				}
 
 			});
@@ -398,7 +404,8 @@ class Uc_Dshbrd_Admin {
 		function looking_for_service(value)
 		{
 			var wp_admin_ajax_url = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
-				wrapper_results = jQuery('#wrapper_results');
+				wrapper_results = jQuery('#wrapper_results'),
+				loader = jQuery('#lds-loader');
 
 			jQuery.ajax({
 				type: 'POST',
@@ -409,8 +416,7 @@ class Uc_Dshbrd_Admin {
 				},
 				beforeSend: function()
 				{
-					var loader = '<div class="lds-facebook"><div></div><div></div><div></div></div>';
-					wrapper_results.before(loader);
+					loader.fadeIn();
 				},
 				success: function(data)
 				{
@@ -418,7 +424,7 @@ class Uc_Dshbrd_Admin {
 				},
 				complete: function()
 				{
-					jQuery('div.lds-facebook').fadeOut();
+					loader.fadeOut();
 				}
 			});
 		}
@@ -591,7 +597,7 @@ class Uc_Dshbrd_Admin {
 			endwhile;
 		
 		else :
-			echo 'Não encontramos nenhum item correspondente com a pesquisa.';			
+			echo '<p class="text-reset text-center">Não encontramos item(s) relacionados a busca: <b>'. $s .'</b></p>';			
 		endif;
 		
 		// End json call
