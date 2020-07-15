@@ -460,7 +460,7 @@ class Uc_Dshbrd_Admin {
 				valUnt = valUnt,
 				itemType = itemType;
 
-			let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ price_item(qty, valUnt) +'</td></tr>';
+			let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ calc_total_item(qty, valUnt) +'</td></tr>';
 
 			if (itemType == 'servico')
 			{
@@ -479,19 +479,16 @@ class Uc_Dshbrd_Admin {
 
 
 		/**
-			* Add item to work order
-			* 
-			* Após o retorno de sucesso da função ajax que adiciona o item ao carrinho essa função adiciona o item a ordem de serviço.
-			* @param {*} id 
-			* @param {*} name 
-			* @param {*} ref 
-			* @param {*} qty 
-			* @param {*} valUnt 
-			*/
-		function price_item(qty, valUnt)
+		* Calc item total
+		* 
+		* Calcula o total do item adicionado(qtd x val unit)
+		* @param {*} qty 
+		* @param {*} valUnt 
+		*/
+		function calc_total_item(qty, valUnt)
 		{
-			var qty = qty,
-				valUnt = valUnt;
+			var qty = parseFloat(qty),
+				valUnt = parseFloat(valUnt);
 
 			let total = (valUnt * qty);
 
