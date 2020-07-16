@@ -193,10 +193,10 @@ class Uc_Dshbrd_Admin {
 								</li>
 							</ul>
 						</nav>
-						<!-- /End #select_action -->
+						<!-- /End nav selection -->
 
 						<div class="tab-content" id="nav-tabContent">
-							<div id="search-product" class="tab-pane fade show active" role="tabpanel" aria-labelledby="order-product-tab">
+							<div id="search-product" class="tab-pane fade show active border-bottom" role="tabpanel" aria-labelledby="order-product-tab">
 
 								<h4 class="mb-4">Adicionar Produto(s)</h4>
 								<form id="add_product" action="">
@@ -206,7 +206,7 @@ class Uc_Dshbrd_Admin {
 											<input type="text" id="name_ref" name="name_ref" class="form-control col-9" onkeyup="looking_for_product(this.value)" placeholder="Digite o nome ou código de barras para procurar">
 										</div>
 
-										<div class="form-group row col-12">
+										<div class="form-group row col-12 d-none">
 											<label class="form-check-label col-3" for="item_qty">Quantidade</label>
 											<input type="number" id="item_qty" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
 										</div>
@@ -219,9 +219,9 @@ class Uc_Dshbrd_Admin {
 							</div>
 							<!-- /End #new_order_insert_data -->
 
-							<div id="search-service" class="tab-pane fade" role="tabpanel" aria-labelledby="order-service-tab">
+							<div id="search-service" class="tab-pane fade border-bottom" role="tabpanel" aria-labelledby="order-service-tab">
 
-								<h4>Adicionar Serviço(s)</h4>
+								<h4 class="mb-4">Adicionar Serviço(s)</h4>
 								<form id="add_service" action="">
 									<div class="form-row">
 										<div class="form-group row col-12">
@@ -229,12 +229,12 @@ class Uc_Dshbrd_Admin {
 											<input type="text" id="" name="name_ref" class="form-control col-9" onkeyup="looking_for_service(this.value)" placeholder="Digite o nome ou código para procurar">
 										</div>
 
-										<div class="form-group row col-12">
+										<div class="form-group row col-12 d-none">
 											<label for="item_qty" class="form-check-label col-3">Quantidade</label>
 											<input type="number" id="" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
 										</div>
 
-										<div class="form-group row col-12">
+										<div class="form-group row col-12 d-none">
 											<label for="technician" class="form-check-label col-3">Técnico Responsável</label>
 											<select name="technician" id="technician" class="form-control col-9">
 												<option value="">Selecione uma opção</option>
@@ -243,8 +243,6 @@ class Uc_Dshbrd_Admin {
 												<option value="outro">Outro</option>
 											</select>
 										</div>
-
-										<button id="" class="btn btn-primary">Adicionar Item</button>
 									</div>
 								</form>
 								<!-- /End #add_service -->
@@ -252,9 +250,9 @@ class Uc_Dshbrd_Admin {
 							</div>
 							<!-- /End #new_order_insert_service -->
 
-							<div id="search-costumer" class="tab-pane fade" role="tabpanel" aria-labelledby="order-customer-tab">
+							<div id="search-costumer" class="tab-pane fade border-bottom" role="tabpanel" aria-labelledby="order-customer-tab">
 
-								<h4>Procurar Cliente</h4>
+								<h4 class="mb-4">Procurar Cliente</h4>
 								<form id="add_customer_to_order" action="">
 									<div class="form-row">
 										<div class="form-group row col-12">
@@ -264,7 +262,6 @@ class Uc_Dshbrd_Admin {
 									</div>
 								</form>
 								<!-- /End #add_customer_to_order -->
-								<button id="" class="btn btn-primary">Adicionar ao Pedido</button>
 							</div>
 							<!-- /End #new_order_insert_customer -->
 						</div>
@@ -369,85 +366,86 @@ class Uc_Dshbrd_Admin {
 			</div>
 			<!-- /End Body -->
 		</div>
+		<!-- /End Container All Orders -->
 
 		<script type="text/javascript">
 		
-		function looking_for_product(value)
-		{
+			function looking_for_product(value)
+			{
 
-			var admin_url_ajax = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
-				wrapper_results = jQuery('#wrapper_results'),
-				loader = jQuery('#lds-loader');
-			jQuery.ajax({
-				type: 'POST',
-				url: '<?php echo admin_url('admin-ajax.php'); ?>',
-				data: {
-					action: 'product_by_name_or_ref',
-					string: value
-				},
-				beforeSend: function()
-				{
-					loader = jQuery('#lds-loader')
-					loader.show().fadeIn();
-				},
-				success: function(data){
-					wrapper_results.html(data);
-				},
-				complete: function()
-				{
-					loader.hide().fadeOut();
-				}
+				var admin_url_ajax = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
+					wrapper_results = jQuery('#wrapper_results'),
+					loader = jQuery('#lds-loader');
+				jQuery.ajax({
+					type: 'POST',
+					url: '<?php echo admin_url('admin-ajax.php'); ?>',
+					data: {
+						action: 'product_by_name_or_ref',
+						string: value
+					},
+					beforeSend: function()
+					{
+						loader = jQuery('#lds-loader')
+						loader.show().fadeIn();
+					},
+					success: function(data){
+						wrapper_results.html(data);
+					},
+					complete: function()
+					{
+						loader.hide().fadeOut();
+					}
 
-			});
-		}
+				});
+			}
 
-		function looking_for_service(value)
-		{
-			var wp_admin_ajax_url = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
-				wrapper_results = jQuery('#wrapper_results'),
-				loader = jQuery('#lds-loader');
+			function looking_for_service(value)
+			{
+				var wp_admin_ajax_url = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
+					wrapper_results = jQuery('#wrapper_results'),
+					loader = jQuery('#lds-loader');
 
-			jQuery.ajax({
-				type: 'POST',
-				url: '<?php echo admin_url('admin-ajax.php'); ?>',
-				data: {
-					action: 'service_by_name_or_ref',
-					term: value,
-				},
-				beforeSend: function()
-				{
-					loader.fadeIn();
-				},
-				success: function(data)
-				{
-					wrapper_results.html(data);
-				},
-				complete: function()
-				{
-					loader.fadeOut();
-				}
-			});
-		}
+				jQuery.ajax({
+					type: 'POST',
+					url: '<?php echo admin_url('admin-ajax.php'); ?>',
+					data: {
+						action: 'service_by_name_or_ref',
+						term: value,
+					},
+					beforeSend: function()
+					{
+						loader.fadeIn();
+					},
+					success: function(data)
+					{
+						wrapper_results.html(data);
+					},
+					complete: function()
+					{
+						loader.fadeOut();
+					}
+				});
+			}
 
-		// Ajax for add to cart
-		function add_to_cart(id, name, ref, qty, valUnt, itemType)
-		{
-			jQuery.ajax({
-				type: 'POST',
-				url: '<?php echo admin_url('admin-ajax.php'); ?>',
-				data: {
-					action: 'add_product_to_cart',
-					item_id: id,
-					item_qtd: qty,
-				},
-				success: function(data){
-					console.log(data);
-					add_item_to_order(id, name, ref, qty, valUnt, itemType);
-				}
-			});
-		}
+			// Ajax for add to cart
+			function add_to_cart(id, name, ref, qty, valUnt, itemType)
+			{
+				jQuery.ajax({
+					type: 'POST',
+					url: '<?php echo admin_url('admin-ajax.php'); ?>',
+					data: {
+						action: 'add_product_to_cart',
+						item_id: id,
+						item_qtd: qty,
+					},
+					success: function(data){
+						console.log(data);
+						add_item_to_order(id, name, ref, qty, valUnt, itemType);
+					}
+				});
+			}
 
-		/**
+			/**
 			* Add item to work order
 			* 
 			* Após o retorno de sucesso da função ajax que adiciona o item ao carrinho essa função adiciona o item a ordem de serviço.
@@ -456,52 +454,52 @@ class Uc_Dshbrd_Admin {
 			* @param {*} ref 
 			* @param {*} qty 
 			* @param {*} valUnt 
+			* @param {*} itemType
 			*/
-		function add_item_to_order(id, name, ref,  qty, valUnt, itemType)
-		{
-			var id = id,
-				name = name,
-				ref = ref,
-				qty = qty,
-				valUnt = valUnt,
-				itemType = itemType;
-
-			let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ calc_total_item(qty, valUnt) +'</td></tr>';
-
-			if (itemType == 'servico')
+			function add_item_to_order(id, name, ref,  qty, valUnt, itemType)
 			{
-				var tableToAdd = jQuery('#order_services > table > tbody');
-				tableToAdd.append(itemToAdd);
+				var id = id,
+					name = name,
+					ref = ref,
+					qty = qty,
+					valUnt = valUnt,
+					itemType = itemType;
+
+				let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ calc_total_item(qty, valUnt) +'</td></tr>';
+
+				if (itemType == 'servico')
+				{
+					var tableToAdd = jQuery('#order_services > table > tbody');
+					tableToAdd.append(itemToAdd);
+				}
+				else
+				{
+					var tableToAdd = jQuery('#order_products > table > tbody');
+					tableToAdd.append(itemToAdd);
+				}
+
+				console.log(id + ' - ' + name + ' - ' + ref  + ' - ' + qty + ' - ' + valUnt + '</br>');
+				console.log(itemToAdd);
 			}
-			else
+
+
+			/**
+			* Calc item total
+			* 
+			* Calcula o total do item adicionado(qtd x val unit)
+			* @param {*} qty 
+			* @param {*} valUnt 
+			*/
+			function calc_total_item(qty, valUnt)
 			{
-				var tableToAdd = jQuery('#order_products > table > tbody');
-				tableToAdd.append(itemToAdd);
+				var qty = parseFloat(qty),
+					valUnt = parseFloat(valUnt);
+
+				let total = (valUnt * qty);
+
+				return total.toLocaleString('pt-br', {minimunFractionDigits: 2});
 			}
-
-			console.log(id + ' - ' + name + ' - ' + ref  + ' - ' + qty + ' - ' + valUnt + '</br>');
-			console.log(itemToAdd);
-		}
-
-
-		/**
-		* Calc item total
-		* 
-		* Calcula o total do item adicionado(qtd x val unit)
-		* @param {*} qty 
-		* @param {*} valUnt 
-		*/
-		function calc_total_item(qty, valUnt)
-		{
-			var qty = parseFloat(qty),
-				valUnt = parseFloat(valUnt);
-
-			let total = (valUnt * qty);
-
-			return total.toLocaleString('pt-br', {minimunFractionDigits: 2});
-		}
 		</script>
-		<!-- /End Container All Orders -->
 		<?php
 	}
 
@@ -573,7 +571,7 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End Thumb -->
 
-						<div class="col-9">
+						<div class="col-8">
 							<div class="col-12 mb-4">
 								<h4><?php echo $title; ?></h4>
 							</div>
@@ -588,10 +586,16 @@ class Uc_Dshbrd_Admin {
 								</div>
 							</div>
 						</div>
+
+						<div class="form-group d-flex flex-column align-items-center col-1 m-0 p-0 border-left">
+							<button><i class="fas fa-plus"></i></button>
+							<input type="text" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
+							<button><i class="fas fa-minus"></i></button>
+						</div>
 						<!-- /End Informations -->
 					</div>
-					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'), jQuery(this).parent().attr('product-type'))">Adicionar ao Carrinho</button>
 				</div>
+				<button type="button" id="" class="btn btn-primary btn-lg btn-block mt-1" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'), jQuery(this).parent().attr('product-type'))">Adicionar ao Carrinho</button>
 				<!-- /End template card product item -->
 				<?php
 			endwhile;
@@ -661,7 +665,7 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End Thumb -->
 
-						<div class="col-9">
+						<div class="col-8">
 							<div class="col-12 mb-4">
 								<h4><?php echo $title; ?></h4>
 							</div>
@@ -677,9 +681,16 @@ class Uc_Dshbrd_Admin {
 							</div>
 						</div>
 						<!-- /End Informations -->
+
+						<div class="form-group d-flex flex-column align-items-center col-1 m-0 p-0 border-left">
+							<button><i class="fas fa-plus"></i></button>
+							<input type="text" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
+							<button><i class="fas fa-minus"></i></button>
+						</div>
+						<!-- /End quantity wrapper -->
 					</div>
-					<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'), jQuery(this).parent().attr('product-type'))">Adicionar ao Carrinho</button>
 				</div>
+				<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'), jQuery(this).parent().attr('product-type'))">Adicionar ao Carrinho</button>
 				<?php
 			endwhile;
 
