@@ -499,6 +499,37 @@ class Uc_Dshbrd_Admin {
 
 				return total.toLocaleString('pt-br', {minimunFractionDigits: 2});
 			}
+
+			
+			/**
+			* Function increment item quantity
+			* 
+			* @param {*} val 
+			* 
+			* @since beta_1.0.0
+			*/
+			function increment_number(element)
+			{
+				var currVal = parseInt(element.val()),
+					newVal = currVal + 1;
+
+				element.val(newVal);
+			}
+
+			/**
+			* Function increment item quantity
+			* 
+			* @param {*} val 
+			* 
+			* @since beta_1.0.0
+			*/
+			function decrement_number(element)
+			{
+				var currVal = parseInt(element.val()),
+					newVal = currVal - 1;
+
+				element.val(newVal);
+			}
 		</script>
 		<?php
 	}
@@ -588,9 +619,9 @@ class Uc_Dshbrd_Admin {
 						</div>
 
 						<div class="form-group d-flex flex-column align-items-center col-1 m-0 p-0 border-left">
-							<button><i class="fas fa-plus"></i></button>
+							<button class="" onclick="increment_number(jQuery(this).siblings('input'));"><i class="fas fa-plus"></i></button>
 							<input type="text" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
-							<button><i class="fas fa-minus"></i></button>
+							<button class="" onclick="decrement_number(jQuery(this).siblings('input'));"><i class="fas fa-minus"></i></button>
 						</div>
 						<!-- /End Informations -->
 					</div>
@@ -683,9 +714,9 @@ class Uc_Dshbrd_Admin {
 						<!-- /End Informations -->
 
 						<div class="form-group d-flex flex-column align-items-center col-1 m-0 p-0 border-left">
-							<button><i class="fas fa-plus"></i></button>
+							<button class="" onclick="increment_number(jQuery(this).siblings('input'));"><i class="fas fa-plus"></i></button>
 							<input type="text" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
-							<button><i class="fas fa-minus"></i></button>
+							<button class="" onclick="decrement_number(jQuery(this).siblings('input'));"><i class="fas fa-minus"></i></button>
 						</div>
 						<!-- /End quantity wrapper -->
 					</div>
