@@ -619,14 +619,14 @@ class Uc_Dshbrd_Admin {
 						</div>
 
 						<div class="form-group d-flex flex-column align-items-center col-1 m-0 p-0 border-left">
-							<button class="" onclick="increment_number(jQuery(this).siblings('input'));"><i class="fas fa-plus"></i></button>
-							<input type="text" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
-							<button class="" onclick="decrement_number(jQuery(this).siblings('input'));"><i class="fas fa-minus"></i></button>
+							<button class="btn btn-light" onclick="increment_number(jQuery(this).siblings('input'));"><i class="fas fa-plus"></i></button>
+							<input type="text" id="product-<?php echo $id; ?>" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
+							<button class="btn btn-light" onclick="decrement_number(jQuery(this).siblings('input'));"><i class="fas fa-minus"></i></button>
 						</div>
 						<!-- /End Informations -->
 					</div>
 				</div>
-				<button type="button" id="" class="btn btn-primary btn-lg btn-block mt-1" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'), jQuery(this).parent().attr('product-type'))">Adicionar ao Carrinho</button>
+				<button type="button" id="" class="btn btn-primary btn-lg btn-block mt-1" onclick="add_to_cart(jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))">Adicionar ao Carrinho</button>
 				<!-- /End template card product item -->
 				<?php
 			endwhile;
@@ -714,14 +714,14 @@ class Uc_Dshbrd_Admin {
 						<!-- /End Informations -->
 
 						<div class="form-group d-flex flex-column align-items-center col-1 m-0 p-0 border-left">
-							<button class="" onclick="increment_number(jQuery(this).siblings('input'));"><i class="fas fa-plus"></i></button>
-							<input type="text" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
-							<button class="" onclick="decrement_number(jQuery(this).siblings('input'));"><i class="fas fa-minus"></i></button>
+							<button class="btn btn-light" onclick="increment_number(jQuery(this).siblings('input'));"><i class="fas fa-plus"></i></button>
+							<input type="text" id="product-<?php echo $id ?>" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
+							<button class="btn btn-light" onclick="decrement_number(jQuery(this).siblings('input'));"><i class="fas fa-minus"></i></button>
 						</div>
 						<!-- /End quantity wrapper -->
 					</div>
 				</div>
-				<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).parent().attr('product-id'), jQuery(this).parent().attr('product-name'), jQuery(this).parent().attr('product-ref'), jQuery('#item_qty').val(), jQuery(this).parent().attr('product-price'), jQuery(this).parent().attr('product-type'))">Adicionar ao Carrinho</button>
+				<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))">Adicionar ao Carrinho</button>
 				<?php
 			endwhile;
 
