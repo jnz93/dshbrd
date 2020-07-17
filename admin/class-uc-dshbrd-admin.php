@@ -463,14 +463,16 @@ class Uc_Dshbrd_Admin {
 					ref = ref,
 					qty = qty,
 					valUnt = valUnt,
+					valTotal = calc_total_item(qty, valUnt),
 					itemType = itemType;
 
-				let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td>'+ calc_total_item(qty, valUnt) +'</td></tr>';
+				let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td class="total-item">'+ valTotal +'</td></tr>';
 
 				if (itemType == 'servico')
 				{
 					var tableToAdd = jQuery('#order_services > table > tbody');
 					tableToAdd.append(itemToAdd);
+					sum_total_services_added();
 				}
 				else
 				{
@@ -530,6 +532,29 @@ class Uc_Dshbrd_Admin {
 
 				element.val(newVal);
 			}
+
+			/**
+			 * Function sum_total_services_added()
+			 * 
+			 * Soma do total de serviços adicionados na nota
+			 * 
+			 * @since beta_1.0.0
+			 */
+			function sum_total_services_added()
+			{
+				var totalOnTable = jQuery('#order_services tbody tr .total-item');
+
+				var sum = 0;
+				totalOnTable.each(function(){
+
+					sum = parseInt(jQuery(this).text()) + sum;
+					
+					// console.log(parseInt(varTotalServices);
+				});
+				jQuery('#total_services').text('R$' + sum);
+				console.log(sum);
+			}
+
 		</script>
 		<?php
 	}
