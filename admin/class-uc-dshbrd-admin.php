@@ -478,6 +478,7 @@ class Uc_Dshbrd_Admin {
 				{
 					var tableToAdd = jQuery('#order_products > table > tbody');
 					tableToAdd.append(itemToAdd);
+					sum_total_products_added();
 				}
 
 				console.log(id + ' - ' + name + ' - ' + ref  + ' - ' + qty + ' - ' + valUnt + '</br>');
@@ -555,6 +556,25 @@ class Uc_Dshbrd_Admin {
 				console.log(sum);
 			}
 
+			/**
+			 * Function sum_total_products_added()
+			 * 
+			 * Soma do total de produtos adicionados na nota
+			 * 
+			 * @since beta_1.0.0
+			 */
+			function sum_total_products_added()
+			{
+				var valuesOnTable = jQuery('#order_products tbody tr .total-item');
+
+				var sumTotal = 0.0;
+				valuesOnTable.each(function(){
+
+					sumTotal = parseFloat(jQuery(this).text()) + sumTotal;
+				});
+				jQuery('#total_products').text('R$' + sumTotal);
+				console.log(sumTotal);
+			}
 		</script>
 		<?php
 	}
