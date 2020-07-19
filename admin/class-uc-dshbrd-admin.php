@@ -458,13 +458,9 @@ class Uc_Dshbrd_Admin {
 			*/
 			function add_item_to_order(id, name, ref,  qty, valUnt, itemType)
 			{
-				var id = id,
-					name = name,
-					ref = ref,
-					qty = qty,
-					valUnt = valUnt,
-					valTotal = calc_total_item(qty, valUnt),
-					itemType = itemType;
+				console.log('Valor Unitário: ' + valUnt)
+					
+				var valTotal = calc_total_item(qty, valUnt);
 
 				let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td class="total-item">'+ valTotal +'</td></tr>';
 
@@ -480,11 +476,8 @@ class Uc_Dshbrd_Admin {
 					tableToAdd.append(itemToAdd);
 					sum_total_products_added();
 				}
-
-				console.log(id + ' - ' + name + ' - ' + ref  + ' - ' + qty + ' - ' + valUnt + '</br>');
-				console.log(itemToAdd);
+				sum_total_order();
 			}
-
 
 			/**
 			* Calc item total
@@ -495,12 +488,12 @@ class Uc_Dshbrd_Admin {
 			*/
 			function calc_total_item(qty, valUnt)
 			{
-				var qty = parseFloat(qty),
-					valUnt = parseFloat(valUnt);
-
+				// var qty = qty,
+				// 	valUnt = parseFloat(valUnt);
+				console.log("Qtd. " + qty + ' / Val Un. ' + valUnt);
 				let total = (valUnt * qty);
 
-				return total.toLocaleString('pt-br', {minimunFractionDigits: 2});
+				return total;
 			}
 
 			
@@ -548,7 +541,7 @@ class Uc_Dshbrd_Admin {
 				var sum = 0;
 				totalOnTable.each(function(){
 
-					sum = parseInt(jQuery(this).text()) + sum;
+					sum = parseFloat(jQuery(this).text()) + sum;
 					
 					// console.log(parseInt(varTotalServices);
 				});
@@ -574,6 +567,32 @@ class Uc_Dshbrd_Admin {
 				});
 				jQuery('#total_products').text('R$' + sumTotal);
 				console.log(sumTotal);
+			}
+
+			/**
+			 * Function sum_total_order()
+			 * 
+			 * Soma do total de produtos e serviços adicionados a nota
+			 * 
+			 * @since beta_1.0.0
+			 */
+			function sum_total_order()
+			{
+				var getValueOfServices = jQuery('#total_services').text(),
+					getValueOfProducts = jQuery('#total_products').text();
+
+				var splitValueServices = getValueOfServices.split('R$'),
+					splitValueProducts = getValueOfProducts.split('R$');
+				
+				console.log(splitValueServices);
+				console.log(splitValueProducts);
+
+				var totalOfServices = parseFloat(splitValueServices[1]),
+					totalOfProducts = parseFloat(splitValueProducts[1]);
+
+				var totalOrder = totalOfServices + totalOfProducts;
+
+				jQuery('#total_cart').text(parseFloat(totalOrder));
 			}
 		</script>
 		<?php
