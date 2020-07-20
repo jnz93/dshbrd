@@ -430,15 +430,16 @@ class Uc_Dshbrd_Admin {
 			}
 
 			// Ajax for add to cart
-			function add_to_cart(id, name, ref, qty, valUnt, itemType)
+			function add_product_on_order(order_id, product_id, product_name, product_ref, product_qty, product_unt_val, product_type)
 			{
 				jQuery.ajax({
 					type: 'POST',
 					url: '<?php echo admin_url('admin-ajax.php'); ?>',
 					data: {
-						action: 'add_product_to_cart',
-						item_id: id,
-						item_qtd: qty,
+						action: 'add_product_and_update_order',
+						order_id: order_id,
+						item_id: product_id,
+						item_qtd: product_qty,
 					},
 					success: function(data){
 						console.log(data);
@@ -692,7 +693,7 @@ class Uc_Dshbrd_Admin {
 						<!-- /End Informations -->
 					</div>
 				</div>
-				<button type="button" id="" class="btn btn-primary btn-lg btn-block mt-1" onclick="add_to_cart(jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))">Adicionar ao Carrinho</button>
+				<button type="button" id="" class="btn btn-primary btn-lg btn-block mt-1" onclick="add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))">Adicionar ao Carrinho</button>
 				<!-- /End template card product item -->
 				<?php
 			endwhile;
@@ -787,7 +788,7 @@ class Uc_Dshbrd_Admin {
 						<!-- /End quantity wrapper -->
 					</div>
 				</div>
-				<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_to_cart(jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))">Adicionar ao Carrinho</button>
+				<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))">Adicionar ao Carrinho</button>
 				<?php
 			endwhile;
 
