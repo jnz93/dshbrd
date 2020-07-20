@@ -133,6 +133,8 @@ class Uc_Dshbrd_Admin {
 	 */
 	public function uc_dshbrd_orders()
 	{
+		$new_order = $this->create_new_wc_order();
+		$order_id = $new_order->id;
 		?>
 		<div class="">
 			
@@ -280,7 +282,7 @@ class Uc_Dshbrd_Admin {
 
 					<div class="col-7">
 						<div id="new_order_data" class="col-12 card mb-4">
-							<h4 class="mb-4">Dados do pedido - #001</h4>
+							<h4 id="the_order_id" data-order-id="<?php echo $order_id; ?>" class="mb-4">Pedido - <?php echo '#' . $order_id; ?></h4>
 
 							<div id="order_products" class="">
 								<table class="table">
@@ -1007,5 +1009,19 @@ class Uc_Dshbrd_Admin {
 
 			$count++;
 		}
+	}
+
+	/**
+	 * Function create order and return the object data
+	 * 
+	 * Função vai criar a ordem assim que um novo pedido começa.
+	 * 
+	 * @since beta_1.0.0
+	 */
+	public function create_new_wc_order()
+	{
+		$order = wc_create_order();
+
+		return $order;
 	}
 }
