@@ -442,8 +442,7 @@ class Uc_Dshbrd_Admin {
 						item_qtd: product_qty,
 					},
 					success: function(data){
-						console.log(data);
-						add_item_to_order(id, name, ref, qty, valUnt, itemType);
+						insert_product_on_list_order(product_id, product_name, product_ref, product_qty, product_unt_val, product_type);
 					}
 				});
 			}
@@ -459,7 +458,7 @@ class Uc_Dshbrd_Admin {
 			* @param {*} valUnt 
 			* @param {*} itemType
 			*/
-			function add_item_to_order(id, name, ref,  qty, valUnt, itemType)
+			function insert_product_on_list_order(id, name, ref,  qty, valUnt, itemType)
 			{
 				console.log('Valor Unitário: ' + valUnt)
 					
