@@ -61,7 +61,7 @@ class Uc_Dshbrd_Admin {
 		# REGISTERING AJAX ACTIONS
 		add_action('wp_ajax_product_by_name_or_ref', array($this, 'product_by_name_or_ref')); // executed when logged in
 		add_action('wp_ajax_service_by_name_or_ref', array($this, 'service_by_name_or_ref')); // executed when logged in
-		add_action('wp_ajax_add_product_to_cart', array($this, 'add_product_to_cart')); // Executed whe logged in
+		add_action('wp_ajax_add_product_and_update_order', array($this, 'add_product_and_update_order')); // Executed whe logged in
 
 		# ADD SHORTCODES
 		add_shortcode('apply_backup_services', array($this, 'apply_backup_services_from_list'));
@@ -804,22 +804,34 @@ class Uc_Dshbrd_Admin {
 	 * 
 	 * @since 1.0.0
 	 */
-	public function add_product_to_cart()
+	public function add_product_and_update_order()
 	{
-		$product_id = $_POST['item_id'];
-		$product_qtd = (int) $_POST['item_qtd'];
+		$order_id = (int) $_POST['order_id'];
+		$product_id = (int) $_POST['item_id'];
+		$product_qty = (int) $_POST['item_qtd'];
+
+		if (empty($order_id)) :
+			echo 'Erro: ID da ordem não informado';
+			exit();
+		endif;
 
 		if (empty($product_id)) :
 			echo 'Erro: ID do produto não informado';
 			exit();
 		endif;
 
-		if (empty($product_qtd) || $product_qtd < 1 ) :
+		if (empty($product_qty) || $product_qty < 1 ) :
 			echo 'Erro: Quantidade inválida ou menor que 1.';
 			exit();
 		endif;
 
-		WC()->cart->add_to_cart($product_id, $product_qtd);
+		// Retrieve order object data
+		$order = wc_get_order($order_id);
+
+		// Add the products to te order
+		$product = wc_get_product( $product_id );
+		$order->add_product($product, $product_qty);
+
 		echo 'item adicionado com successo';
 		die();
 	}
