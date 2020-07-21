@@ -62,6 +62,7 @@ class Uc_Dshbrd_Admin {
 		add_action('wp_ajax_product_by_name_or_ref', array($this, 'product_by_name_or_ref')); // executed when logged in
 		add_action('wp_ajax_service_by_name_or_ref', array($this, 'service_by_name_or_ref')); // executed when logged in
 		add_action('wp_ajax_add_product_and_update_order', array($this, 'add_product_and_update_order')); // Executed whe logged in
+		add_action('wp_ajax_calculate_subtotal_curr_order', array($this, 'calculate_subtotal_curr_order')); // Executed whe logged in
 
 		# ADD SHORTCODES
 		add_shortcode('apply_backup_services', array($this, 'apply_backup_services_from_list'));
@@ -442,7 +443,31 @@ class Uc_Dshbrd_Admin {
 						item_qtd: product_qty,
 					},
 					success: function(data){
+						// console.log(data);
 						insert_product_on_list_order(product_id, product_name, product_ref, product_qty, product_unt_val, product_type);
+						show_subtotal_curr_order(order_id);
+					}
+				});
+			}
+
+			/** 
+			* Fires function/action for sum subtotal of current order
+			* Dispara uma função/ação para somar o subtotal do pedido atual
+			*
+			* @param {*} order_id
+			*/
+			function show_subtotal_curr_order(order_id)
+			{
+				jQuery.ajax({
+					type: 'POST',
+					url: '<?php echo admin_url('admin-ajax.php'); ?>',
+					data: {
+						action: 'calculate_subtotal_curr_order',
+						order_id: order_id
+					},
+					success: function(data)
+					{
+						jQuery('#total_cart').text('R$' + data);
 					}
 				});
 			}
@@ -832,7 +857,6 @@ class Uc_Dshbrd_Admin {
 		$product = wc_get_product( $product_id );
 		$order->add_product($product, $product_qty);
 
-		echo 'item adicionado com successo';
 		die();
 	}
 
@@ -1035,5 +1059,34 @@ class Uc_Dshbrd_Admin {
 		$order = wc_create_order();
 
 		return $order;
+	}
+
+
+	/**
+	 * Function calculate_subtotal_curr_order
+	 * 
+	 * Funcao vai receber o ID da ordem e retornar o total do pedido atual
+	 * 
+	 * @param $order = object
+	 * @since beta_1.0.0
+	 */
+	public function calculate_subtotal_curr_order()
+	{
+		$order_id = (int) $_POST['order_id'];
+
+		if (empty($order_id))
+		{
+			echo 'Id do pedido é inválido.';
+			exit();
+		}
+
+		$order = wc_get_order($order_id);
+
+		// Retrieve order object data
+		$total_order 	= $order->calculate_totals();
+
+		echo $total_order;
+
+		die();
 	}
 }
