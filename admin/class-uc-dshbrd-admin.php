@@ -493,7 +493,7 @@ class Uc_Dshbrd_Admin {
 				{
 					var tableToAdd = jQuery('#order_services > table > tbody');
 					tableToAdd.append(itemToAdd);
-					sum_total_services_added();
+					total_services_on_order();
 				}
 				else
 				{
@@ -548,25 +548,23 @@ class Uc_Dshbrd_Admin {
 			}
 
 			/**
-			 * Function sum_total_services_added()
+			 * Function total_services_on_order()
 			 * 
 			 * Soma do total de serviços adicionados na nota
 			 * 
 			 * @since beta_1.0.0
 			 */
-			function sum_total_services_added()
+			function total_services_on_order()
 			{
-				var totalOnTable = jQuery('#order_services tbody tr .total-item');
+				var totalOnTable = jQuery('#order_services tbody tr input.amount_item');
 
-				var sum = 0;
+				var sum = 0.0;
 				totalOnTable.each(function(){
 
-					sum = parseFloat(jQuery(this).text()) + sum;
+					sum = parseFloat(jQuery(this).val()) + sum;
 					
-					// console.log(parseInt(varTotalServices);
 				});
-				jQuery('#total_services').text('R$' + sum);
-				console.log(sum);
+				jQuery('#total_services').text('R$' + sum).maskMoney();
 			}
 
 			/**
