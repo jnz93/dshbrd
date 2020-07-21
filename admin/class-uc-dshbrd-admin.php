@@ -512,15 +512,11 @@ class Uc_Dshbrd_Admin {
 			*/
 			function calc_total_item(qty, valUnt)
 			{
-				// var qty = qty,
-				// 	valUnt = parseFloat(valUnt);
-				console.log("Qtd. " + qty + ' / Val Un. ' + valUnt);
-				let total = (valUnt * qty);
-
-				return total;
+				valUnt = valUnt.replace(',', '.');
+				
+				return qty * parseFloat(valUnt);
 			}
 
-			
 			/**
 			* Function increment item quantity
 			* 
