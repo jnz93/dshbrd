@@ -114,7 +114,7 @@ class Uc_Dshbrd_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/uc-dshbrd-admin.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'awesome-icons', 'https://kit.fontawesome.com/f18f521cf8.js', array(), $this->version, false);
 		wp_enqueue_script( 'bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js', array(), $this->version, false);
-		wp_enqueue_script( 'mask-money', plugin_dir_url( __FILE__ ) . '/js/maskMoney.min.js', array('jquery'), 'v3.1.1', false);
+		wp_enqueue_script( 'mask-money', plugin_dir_url( __FILE__ ) . 'js/maskMoney.min.js', array('jquery'), 'v3.1.1', false);
 	}
 
 	/** 
@@ -485,11 +485,9 @@ class Uc_Dshbrd_Admin {
 			*/
 			function insert_product_on_list_order(id, name, ref,  qty, valUnt, itemType)
 			{
-				console.log('Valor Unitário: ' + valUnt)
-					
 				var valTotal = calc_total_item(qty, valUnt);
 
-				let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td class="total-item">'+ valTotal +'</td></tr>';
+				let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td><input class="amount_item" type="text" disabled value="'+ valTotal +'"></td></tr>';
 
 				if (itemType == 'servico')
 				{
@@ -503,7 +501,6 @@ class Uc_Dshbrd_Admin {
 					tableToAdd.append(itemToAdd);
 					sum_total_products_added();
 				}
-				sum_total_order();
 			}
 
 			/**
@@ -585,42 +582,17 @@ class Uc_Dshbrd_Admin {
 			 */
 			function sum_total_products_added()
 			{
-				var valuesOnTable = jQuery('#order_products tbody tr .total-item');
+				var valuesOnTable = jQuery('#order_products tbody tr input.amount_item');
 
 				var sumTotal = 0.0;
 				valuesOnTable.each(function(){
 
-					sumTotal = parseFloat(jQuery(this).text()) + sumTotal;
+					sumTotal = parseFloat(jQuery(this).val()) + sumTotal;
 				});
-				jQuery('#total_products').text('R$' + sumTotal);
+				jQuery('#total_products').maskMoney().text('R$' + sumTotal);
 				console.log(sumTotal);
 			}
 
-			/**
-			 * Function sum_total_order()
-			 * 
-			 * Soma do total de produtos e serviços adicionados a nota
-			 * 
-			 * @since beta_1.0.0
-			 */
-			function sum_total_order()
-			{
-				var getValueOfServices = jQuery('#total_services').text(),
-					getValueOfProducts = jQuery('#total_products').text();
-
-				var splitValueServices = getValueOfServices.split('R$'),
-					splitValueProducts = getValueOfProducts.split('R$');
-				
-				console.log(splitValueServices);
-				console.log(splitValueProducts);
-
-				var totalOfServices = parseFloat(splitValueServices[1]),
-					totalOfProducts = parseFloat(splitValueProducts[1]);
-
-				var totalOrder = totalOfServices + totalOfProducts;
-
-				jQuery('#total_cart').text(parseFloat(totalOrder));
-			}
 		</script>
 		<?php
 	}
