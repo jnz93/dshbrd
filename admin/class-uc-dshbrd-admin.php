@@ -61,7 +61,9 @@ class Uc_Dshbrd_Admin {
 		# REGISTERING AJAX ACTIONS
 		add_action('wp_ajax_product_by_name_or_ref', array($this, 'product_by_name_or_ref')); // executed when logged in
 		add_action('wp_ajax_service_by_name_or_ref', array($this, 'service_by_name_or_ref')); // executed when logged in
+		add_action('wp_ajax_search_customer', array($this, 'search_customer')); // executed when logged in
 		add_action('wp_ajax_add_product_and_update_order', array($this, 'add_product_and_update_order')); // Executed whe logged in
+		add_action('wp_ajax_add_customer_and_update_order', array($this, 'add_customer_and_update_order')); // Executed whe logged in
 		add_action('wp_ajax_calculate_subtotal_curr_order', array($this, 'calculate_subtotal_curr_order')); // Executed whe logged in
 
 		# ADD SHORTCODES
