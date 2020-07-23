@@ -430,6 +430,23 @@ class Uc_Dshbrd_Admin {
 				});
 			}
 
+			function looking_for_customer(value)
+			{
+				jQuery.ajax({
+					type: 'POST',
+					url: '<?php echo admin_url('admin-ajax.php'); ?>',
+					data: {
+						action: 'search_customer',
+						term: value
+					},
+					success: function(data)
+					{
+						// console.log(data);
+						jQuery('#customer-results').html(data);
+					}
+				});
+			}
+
 			// Ajax for add to cart
 			function add_product_on_order(order_id, product_id, product_name, product_ref, product_qty, product_unt_val, product_type)
 			{
@@ -446,6 +463,26 @@ class Uc_Dshbrd_Admin {
 						// console.log(data);
 						insert_product_on_list_order(product_id, product_name, product_ref, product_qty, product_unt_val, product_type);
 						show_subtotal_curr_order(order_id);
+					}
+				});
+			}
+
+			// Ajax add customer on order
+			function add_customer_on_order(order_id, customer_id)
+			{
+				jQuery.ajax({
+					type: 'POST',
+					url: '<?php echo admin_url('admin-ajax.php'); ?>',
+					data: {
+						action: 'add_customer_and_update_order',
+						order: order_id,
+						customer: customer_id 
+					},
+					success: function(data)
+					{
+						// var success_alert = '<div class="alert alert-success fixed-bottom" role="alert">Adicionado com sucesso!</div>';
+						// jQuery('#exampleModal').append(success_alert);
+						jQuery('#exampleModal').modal('hide');
 					}
 				});
 			}
@@ -584,7 +621,6 @@ class Uc_Dshbrd_Admin {
 					sumTotal = parseFloat(jQuery(this).val()) + sumTotal;
 				});
 				jQuery('#total_products').maskMoney().text('R$' + sumTotal);
-				console.log(sumTotal);
 			}
 
 		</script>
@@ -592,7 +628,7 @@ class Uc_Dshbrd_Admin {
 	}
 
 	/**
-	 * Function for search product by name or REF. This function is called by json requisition;
+	 * Function/Action for search product by name or REF. This function is called by json requisition;
 	 * 
 	 * @param $string = name or ref;
 	 * @since 1.0.0
@@ -697,7 +733,7 @@ class Uc_Dshbrd_Admin {
 	}
 
 	/**
-	 * Function service_by_name_or_ref
+	 * Function/Action service_by_name_or_ref
 	 * 
 	 * Essa ação é a resposta para uma requisição ajax
 	 * 
@@ -791,6 +827,52 @@ class Uc_Dshbrd_Admin {
 
 
 	/**
+	 * Function/Action search_customer
+	 */
+	public function search_customer()
+	{
+		$customer = $_POST['term'];
+
+		$users = get_users(array('search' => $customer));
+		
+		if (!empty($users)) :
+			foreach ($users as $user) :
+				$customer_name 		= $user->first_name . ' ' . $user->last_name;
+				$customer_id 		= $user->ID;
+				$customer_email		= $user->user_email;
+				$customer_type 		= $user->user_type;
+				$customer_avatar_url = get_avatar_url($customer_id, ['size' => '40']);
+				?>
+				<div class="card" customer-id="<?php echo $customer_id; ?>" customer-name="<?php echo $customer_name; ?>" customer-type="<?php echo $customer_type;?>">
+					<div class="row">
+						<div class="col-3">
+							<img src="<?php echo $customer_avatar_url; ?>" alt="">
+						</div>
+						<!-- /End Thumb -->
+
+						<div class="col-9">
+							<div class="mb-2">
+								<h4><?php echo $customer_name; ?></h4>
+							</div>
+							<div class="align-middle">
+								<span class="badge badge-secondary mr-2"><?php echo $customer_email ?></span>
+								<span class="badge badge-secondary mr-2"><?php echo $customer_type ?></span>
+							</div>
+						</div>
+						<!-- /End Informations -->
+
+					</div>
+				</div>
+				<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_customer_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('customer-id'), jQuery(this).prev().attr('customer-name'), jQuery(this).prev().attr('customer-type'))">Adicionar ao Pedido</button>
+				
+				<?php		
+			endforeach;
+		endif;
+
+		die();
+	}
+
+	/**
 	 * Function for add product to cart with quantity by ajax call
 	 * 
 	 * @since 1.0.0
@@ -826,6 +908,30 @@ class Uc_Dshbrd_Admin {
 		die();
 	}
 
+	/**
+	 * Function for add customer to curr order by ajax call
+	 * 
+	 * @since beta_1.0.0
+	 */
+	public function add_customer_and_update_order()
+	{
+		$order_id 		= $_POST['order'];
+		$customer_id 	= $_POST['customer'];
+
+		if (empty($order_id)) :
+			echo 'Erro: Pedido inválido.';
+			exit();
+		endif;
+
+		if (empty($customer_id)) :
+			echo 'Erro: Id do usuário inválido.';
+			exit();
+		endif;
+		
+		update_post_meta($order_id, '_customer_user', $customer_id);
+
+		die();
+	}
 
 	/**
 	 * Function customer custom category
