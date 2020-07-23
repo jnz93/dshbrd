@@ -193,9 +193,6 @@ class Uc_Dshbrd_Admin {
 								<li class="nav-item" role="presentation">
 									<a class="nav-link" id="order-service" data-toggle="pill" href="#search-service" role="tab" aria-controls="search-service" aria-selected="false">Serviços</a>
 								</li>
-								<li class="nav-item" role="presentation">
-									<a class="nav-link" id="order-customer" data-toggle="pill" href="#search-costumer" role="tab" aria-controls="search-costumer" aria-selected="false">Cliente</a>
-								</li>
 							</ul>
 						</nav>
 						<!-- /End nav selection -->
@@ -254,21 +251,6 @@ class Uc_Dshbrd_Admin {
 
 							</div>
 							<!-- /End #new_order_insert_service -->
-
-							<div id="search-costumer" class="tab-pane fade border-bottom" role="tabpanel" aria-labelledby="order-customer-tab">
-
-								<h4 class="mb-4">Procurar Cliente</h4>
-								<form id="add_customer_to_order" action="">
-									<div class="form-row">
-										<div class="form-group row col-12">
-											<label for="customer_name" class="form-check-label col-3">Nome / Ref.</label>
-											<input type="text" id="customer_name" name="customer_name" class="form-control col-9" placeholder="Digite o nome ou CPF">
-										</div>
-									</div>
-								</form>
-								<!-- /End #add_customer_to_order -->
-							</div>
-							<!-- /End #new_order_insert_customer -->
 						</div>
 						
 						<div class="flex-row d-flex justify-content-center">
@@ -284,6 +266,13 @@ class Uc_Dshbrd_Admin {
 					<!-- /End add products, services and customer -->
 
 					<div class="col-7">
+						<div class="col-12 mt-4">
+							<!-- Button trigger modal -->
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-user-plus"></i> Adicionar cliente ao pedido</button>
+							<button class="btn btn-primary"><i class="fas fa-shipping-fast"></i> Adicionar frete</button>
+							<button class="btn btn-primary"><i class="fas fa-percent"></i> Aplicar desconto</button>
+						</div>
+
 						<div id="new_order_data" class="col-12 card mb-4">
 							<h4 id="the_order_id" data-order-id="<?php echo $order_id; ?>" class="mb-4">Pedido - <?php echo '#' . $order_id; ?></h4>
 
@@ -322,49 +311,85 @@ class Uc_Dshbrd_Admin {
 								</table>
 							</div>
 							<!-- /End #order_services -->
-
-							<div class="d-flex justify-content-end">
-								<div class="col-4 d-flex-column">
-									<div class="d-flex col-12 mb-2">
-										<div class="d-flex col-3 bg-info align-items-center justify-content-center p-0">
-											<i class="text-white fas fa-microchip" style="font-size: 1.4em;"></i>
-										</div>
-										<div class="col-9 d-flex-column">
-											<span style="font-size: .8em;">Total em produtos</span>
-											<h6 id="total_products">R$00,00</h6>
-										</div>
-									</div>
-									<!-- /End total products -->
-									
-									<div class="d-flex col-12">
-										<div class="d-flex col-3 bg-info align-items-center justify-content-center p-0">
-											<i class="text-white fas fa-briefcase" style="font-size: 1.4em;"></i>
-										</div>
-										<div class="col-9 d-flex-column">
-											<span style="font-size: .8em;">Total em serviços</span>
-											<h6 id="total_services">R$00,00</h6>
-										</div>
-									</div>
-									<!-- /End total services -->
-								</div>
-
-								<div class="d-flex col-4">
-									<div class="d-flex col-3 bg-danger align-items-center justify-content-center p-0">
-										<i class="text-white fas fa-shopping-cart" style="font-size: 1.4em;"></i>
-									</div>
-									<div class="col-9 d-flex-column justify-content-center">
-										<span style="font-size: .8em">Total</span>
-										<h4 id="total_cart">R$00,00</h4>
-									</div>
-								</div>
-							</div>
-							<!-- /End totals -->
 						</div>
 						<!-- /End #new_order_data  -->
-						<button class="btn btn-primary btn-lg">Finalizar Compra</button>
-						<button class="btn btn-danger">Cancelar</button>
+
+						<div class="d-flex justify-content-end">
+							<div class="col-4 d-flex-column">
+								<div class="d-flex col-12 mb-2">
+									<div class="d-flex col-3 bg-info align-items-center justify-content-center p-0">
+										<i class="text-white fas fa-microchip" style="font-size: 1.4em;"></i>
+									</div>
+									<div class="col-9 d-flex-column">
+										<span style="font-size: .8em;">Total em produtos</span>
+										<h6 id="total_products">R$00,00</h6>
+									</div>
+								</div>
+								<!-- /End total products -->
+								
+								<div class="d-flex col-12">
+									<div class="d-flex col-3 bg-info align-items-center justify-content-center p-0">
+										<i class="text-white fas fa-briefcase" style="font-size: 1.4em;"></i>
+									</div>
+									<div class="col-9 d-flex-column">
+										<span style="font-size: .8em;">Total em serviços</span>
+										<h6 id="total_services">R$00,00</h6>
+									</div>
+								</div>
+								<!-- /End total services -->
+							</div>
+
+							<div class="d-flex col-4">
+								<div class="d-flex col-3 bg-danger align-items-center justify-content-center p-0">
+									<i class="text-white fas fa-shopping-cart" style="font-size: 1.4em;"></i>
+								</div>
+								<div class="col-9 d-flex-column justify-content-center">
+									<span style="font-size: .8em">Total</span>
+									<h4 id="total_cart">R$00,00</h4>
+								</div>
+							</div>
+						</div>
+						<!-- /End totals -->
+
+						<button class="btn btn-primary">Finalizar compra</button>
 					</div>
 
+					<!-- Modal Insert Customer -->
+					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">Adicionar cliente ao pedido</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="border-bottom">
+										<form id="add_customer_to_order" action="">
+											<div class="form-row">
+												<div class="form-group col-12">
+													<label for="customer_name" class="form-check-label mb-2">Digite o nome ou código do cliente</label>
+													<input type="text" id="customer_name" name="customer_name" class="form-control col-12" onkeyup="looking_for_customer(jQuery(this).val())" placeholder="Digite o nome ou CPF">
+												</div>
+											</div>
+										</form>
+										<!-- /End #add_customer_to_order -->
+									</div>
+									<!-- /End #form_search_customer -->
+
+									<div id="customer-results" class="">
+									
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<!-- /End #modal_insert_customer -->
 				</div>
 				<!-- /End #new_order  -->
 
