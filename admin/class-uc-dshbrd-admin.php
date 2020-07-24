@@ -351,7 +351,7 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End totals -->
 
-						<button class="btn btn-primary">Finalizar compra</button>
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalFinalizarCompra">Finalizar compra</button>
 					</div>
 
 					<!-- Modal Insert Customer -->
@@ -390,6 +390,26 @@ class Uc_Dshbrd_Admin {
 
 					</div>
 					<!-- /End #modal_insert_customer -->
+
+
+					<!-- Modal finalizar compra/imprimir nota -->
+					<div class="modal fade" id="modalFinalizarCompra" tabindex="-1" role="dialog" aria-labelledby="modalFinalizarCompra" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title text-center" style="width: 100%;">Pedido <?php echo "#" . $order_id; ?> finalizado com sucesso!</h4>
+								<button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 16px;"><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body d-flex justify-content-center">
+								<h2><i class="fas fa-check-circle"></i></h2>
+							</div>
+							<div class="modal-footer d-flex justify-content-center">
+								<button type="button" class="btn btn-primary mr-2"><i class="fas fa-print"></i> Imprimir pedido</button>
+								<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-cart-plus"></i> Adicionar novo</button>
+							</div>
+						</div>
+					</div>
+					<!-- /End #modalFinalizarCompra -->
 				</div>
 				<!-- /End #new_order  -->
 
