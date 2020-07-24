@@ -405,7 +405,7 @@ class Uc_Dshbrd_Admin {
 							</div>
 							<div class="modal-footer d-flex justify-content-center">
 								<button type="button" class="btn btn-primary mr-2"><i class="fas fa-print"></i> Imprimir pedido</button>
-								<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-cart-plus"></i> Adicionar novo</button>
+								<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reload_page_for_new_order()"><i class="fas fa-cart-plus"></i> Adicionar novo</button>
 							</div>
 						</div>
 					</div>
@@ -668,6 +668,18 @@ class Uc_Dshbrd_Admin {
 					sumTotal = parseFloat(jQuery(this).val()) + sumTotal;
 				});
 				jQuery('#total_products').maskMoney().text('R$' + sumTotal);
+			}
+
+			/**
+			 * Function reload_page_for_new_order
+			 *
+			 * Força o reload da página para gerar um novo pedido
+			 *
+			 * @since beta_1.0.0
+			 */
+			function reload_page_for_new_order()
+			{
+				document.location.reload(true);
 			}
 
 		</script>
