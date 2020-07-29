@@ -184,7 +184,7 @@ class Uc_Dshbrd_Admin {
 				
 				<div id="new_order" class="row">
 
-					<div class="col-5 mt-4 card">
+					<div class="col-5 mt-4">
 						<nav>
 							<ul class="nav nav-pills mb-3" id="nav-tab" role="tablist">
 								<li class="nav-item" role="presentation">
@@ -197,23 +197,16 @@ class Uc_Dshbrd_Admin {
 						</nav>
 						<!-- /End nav selection -->
 
-						<div class="tab-content" id="nav-tabContent">
-							<div id="search-product" class="tab-pane fade show active border-bottom" role="tabpanel" aria-labelledby="order-product-tab">
+						<div class="tab-content mb-2" id="nav-tabContent">
+							<div id="search-product" class="tab-pane col-12 card fade show active" role="tabpanel" aria-labelledby="order-product-tab">
 
-								<h4 class="mb-4">Adicionar Produto(s)</h4>
+								<h4 class="mb-4">Procurar Produto(s)</h4>
 								<form id="add_product" action="">
 									<div class="form-row">
-										<div class="form-group row col-12">
-											<label class="form-check-label col-3" for="name_ref">Nome do produto / Ref.</label>
-											<input type="text" id="name_ref" name="name_ref" class="form-control col-9" onkeyup="looking_for_product(this.value)" placeholder="Digite o nome ou código de barras para procurar">
+										<div class="form-group col-12">
+											<label class="form-check-label mb-2" for="name_ref">Nome do produto / Ref.</label>
+											<input type="text" id="name_ref" name="name_ref" class="form-control col-12" onkeyup="looking_for_product(this.value)" placeholder="Digite o nome ou código de barras para procurar">
 										</div>
-
-										<div class="form-group row col-12 d-none">
-											<label class="form-check-label col-3" for="item_qty">Quantidade</label>
-											<input type="number" id="item_qty" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
-										</div>
-
-										<!-- <button type="button" id="" class="btn btn-primary btn-lg btn-block">Adicionar Item</button> -->
 									</div>
 								</form>
 								<!-- /End #add_product -->
