@@ -214,29 +214,14 @@ class Uc_Dshbrd_Admin {
 							</div>
 							<!-- /End #new_order_insert_data -->
 
-							<div id="search-service" class="tab-pane fade border-bottom" role="tabpanel" aria-labelledby="order-service-tab">
+							<div id="search-service" class="tab-pane col-12 card fade" role="tabpanel" aria-labelledby="order-service-tab">
 
-								<h4 class="mb-4">Adicionar Serviço(s)</h4>
+								<h4 class="mb-4">Procurar Serviço(s)</h4>
 								<form id="add_service" action="">
 									<div class="form-row">
-										<div class="form-group row col-12">
-											<label for="name_ref" class="form-check-label col-3">Nome do serviço / Ref.</label>
-											<input type="text" id="" name="name_ref" class="form-control col-9" onkeyup="looking_for_service(this.value)" placeholder="Digite o nome ou código para procurar">
-										</div>
-
-										<div class="form-group row col-12 d-none">
-											<label for="item_qty" class="form-check-label col-3">Quantidade</label>
-											<input type="number" id="" name="item_qty" class="form-control col-9" placeholder="1 - 10" value="1">
-										</div>
-
-										<div class="form-group row col-12 d-none">
-											<label for="technician" class="form-check-label col-3">Técnico Responsável</label>
-											<select name="technician" id="technician" class="form-control col-9">
-												<option value="">Selecione uma opção</option>
-												<option value="gabriel-cupini">Gabriel Cupini</option>
-												<option value="everton-cupini">Everton Cupini</option>
-												<option value="outro">Outro</option>
-											</select>
+										<div class="form-group col-12">
+											<label for="name_ref" class="form-check-label mb-2">Nome do serviço / Ref.</label>
+											<input type="text" id="" name="name_ref" class="form-control" onkeyup="looking_for_service(this.value)" placeholder="Digite o nome ou código para procurar">
 										</div>
 									</div>
 								</form>
@@ -251,7 +236,7 @@ class Uc_Dshbrd_Admin {
 						</div>
 						<!-- /End loader -->
 
-						<div id="wrapper_results" class="overflow-auto" style="height: 420px;">
+						<div id="wrapper_results" class="mt-2 overflow-auto" style="height: 420px;">
 
 						</div>
 						<!-- /End #wrapper_results -->
@@ -346,6 +331,7 @@ class Uc_Dshbrd_Admin {
 
 						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalFinalizarCompra">Finalizar compra</button>
 					</div>
+					<!-- /End new order -->
 
 					<!-- Modal Insert Customer -->
 					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
