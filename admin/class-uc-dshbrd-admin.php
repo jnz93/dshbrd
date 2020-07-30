@@ -713,7 +713,7 @@ class Uc_Dshbrd_Admin {
 				$query->the_post();
 				$id 			= get_the_ID();
 				$title 			= get_the_title($id);
-				$thumb 			= get_the_post_thumbnail($id, 'small', array('style' => 'width: 100%; height: 100%;'));
+				$thumb 			= get_the_post_thumbnail($id, 'small', array('style' => 'width: 100%; height: 100%; border-radius: 8px;'));
 				$price 			= get_post_meta($id, '_regular_price', true);
 				$promo_price 	= get_post_meta($id, '_sale_price', true);
 				$stock 			= get_post_meta($id, '_stock_status', true);
@@ -728,20 +728,20 @@ class Uc_Dshbrd_Admin {
 				?>
 				<div class="col-12 card" product-id="<?php echo $id; ?>" product-name="<?php echo $title; ?>" product-ref="<?php echo $ref; ?>" product-price="<?php echo ($promo_price != '' ? $promo_price : $price); ?>" product-type="<?php echo (!empty($item_type_slug) ? $item_type_slug : 'produto' ) ?>">
 					<div class="row">
-						<div class="col-3">
+						<div class="col-3 border-right">
 							<?php echo $thumb; ?>
 						</div>
 						<!-- /End Thumb -->
 
-						<div class="col-8">
-							<div class="col-12 mb-4">
-								<h4><?php echo $title; ?></h4>
+						<div class="col-8 d-flex flex-column justify-content-center">
+							<div class="mb-2 pb-2 border-bottom">
+								<h5><?php echo $title; ?></h5>
 							</div>
-							<div class="row align-middle">
-								<div class="col-4">
-									<h2 class=""><span class="badge badge-secondary mr-2"><?php echo 'R$' . $price ?></span></h2>
+							<div class="row justify-content-center">
+								<div class="col-4 d-flex align-items-center">
+									<h3 class=""><span class="badge badge-secondary mr-2"><?php echo 'R$' . $price ?></span></h3>
 								</div>
-								<div class="col-8">
+								<div class="col-8 p-0 d-flex align-items-center">
 									<span class="badge badge-secondary mr-2"><?php echo $stock ?></span>
 									<span class="badge badge-secondary mr-2"><?php echo '#' . $id ?></span>
 									<span class="badge badge-secondary mr-2"><?php echo 'REF.' . $ref ?></span>
@@ -751,13 +751,13 @@ class Uc_Dshbrd_Admin {
 
 						<div class="form-group d-flex flex-column align-items-center col-1 m-0 p-0 border-left">
 							<button class="btn btn-light" onclick="increment_number(jQuery(this).siblings('input'));"><i class="fas fa-plus"></i></button>
-							<input type="text" id="product-<?php echo $id; ?>" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
+							<input type="text" id="product-<?php echo $id; ?>" name="item_qty" class="form-control text-center mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
 							<button class="btn btn-light" onclick="decrement_number(jQuery(this).siblings('input'));"><i class="fas fa-minus"></i></button>
 						</div>
 						<!-- /End Informations -->
 					</div>
 				</div>
-				<button type="button" id="" class="btn btn-primary btn-lg btn-block mt-1" onclick="add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))">Adicionar ao Carrinho</button>
+				<button type="button" id="" class="btn btn-primary btn-lg mt-1 mb-4 mr-1 float-right" onclick="add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))"><i class="fas fa-cart-plus"></i> Adicionar ao Pedido</button>
 				<!-- /End template card product item -->
 				<?php
 			endwhile;
@@ -806,7 +806,7 @@ class Uc_Dshbrd_Admin {
 				$query->the_post();
 				$id 			= get_the_ID();
 				$title 			= get_the_title($id);
-				$thumb 			= get_the_post_thumbnail($id, 'small', array('style' => 'width: 100%; height: 100%;'));
+				$thumb 			= get_the_post_thumbnail($id, 'small', array('style' => 'width: 100%; height: 100%; border-right: 8px;'));
 				$price 			= get_post_meta($id, '_regular_price', true);
 				$promo_price 	= get_post_meta($id, '_sale_price', true);
 				$stock 			= get_post_meta($id, '_stock_status', true);
@@ -822,20 +822,20 @@ class Uc_Dshbrd_Admin {
 				?>
 				<div class="col-12 card" product-id="<?php echo $id; ?>" product-name="<?php echo $title; ?>" product-ref="<?php echo $ref; ?>" product-price="<?php echo ($promo_price != '' ? $promo_price : $price); ?>" product-type="<?php echo (!empty($item_type_slug) ? $item_type_slug : 'servico' ) ?>">
 					<div class="row">
-						<div class="col-3">
+						<div class="col-3 border-right">
 							<?php echo $thumb; ?>
 						</div>
 						<!-- /End Thumb -->
 
-						<div class="col-8">
-							<div class="col-12 mb-4">
-								<h4><?php echo $title; ?></h4>
+						<div class="col-8 d-flex flex-column justify-content-center">
+							<div class="mb-2 pb-2 border-bottom">
+								<h5><?php echo $title; ?></h5>
 							</div>
-							<div class="row align-middle">
-								<div class="col-4">
-									<h2 class=""><span class="badge badge-secondary mr-2"><?php echo 'R$' . $price ?></span></h2>
+							<div class="row justify-content-center">
+								<div class="col-4 d-flex align-items-center">
+									<h3 class=""><span class="badge badge-secondary mr-2"><?php echo 'R$' . $price ?></span></h3>
 								</div>
-								<div class="col-8">
+								<div class="col-8 p-0 d-flex align-items-center">
 									<span class="badge badge-secondary mr-2"><?php echo $stock ?></span>
 									<span class="badge badge-secondary mr-2"><?php echo '#' . $id ?></span>
 									<span class="badge badge-secondary mr-2"><?php echo 'REF.' . $ref ?></span>
@@ -846,13 +846,13 @@ class Uc_Dshbrd_Admin {
 
 						<div class="form-group d-flex flex-column align-items-center col-1 m-0 p-0 border-left">
 							<button class="btn btn-light" onclick="increment_number(jQuery(this).siblings('input'));"><i class="fas fa-plus"></i></button>
-							<input type="text" id="product-<?php echo $id ?>" name="item_qty" class="form-control mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
+							<input type="text" id="product-<?php echo $id ?>" name="item_qty" class="form-control text-center mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
 							<button class="btn btn-light" onclick="decrement_number(jQuery(this).siblings('input'));"><i class="fas fa-minus"></i></button>
 						</div>
 						<!-- /End quantity wrapper -->
 					</div>
 				</div>
-				<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))">Adicionar ao Carrinho</button>
+				<button type="button" id="" class="btn btn-primary btn-lg mt-1 mb-4 mr-1 float-right" onclick="add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))"><i class="fas fa-cart-plus"></i> Adicionar ao Pedido</button>
 				<?php
 			endwhile;
 
