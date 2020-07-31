@@ -138,6 +138,7 @@ class Uc_Dshbrd_Admin {
 	{
 		$new_order = $this->create_new_wc_order();
 		$order_id = $new_order->id;
+		date_default_timezone_set('America/Sao_Paulo');
 		?>
 		<div class="">
 			
@@ -243,30 +244,53 @@ class Uc_Dshbrd_Admin {
 					</div>
 					<!-- /End add products, services and customer -->
 
-					<div class="col-7">
-						<div class="col-12 mt-4">
-							<!-- Button trigger modal -->
-							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-user-plus"></i> Adicionar cliente ao pedido</button>
-							<button class="btn btn-primary"><i class="fas fa-shipping-fast"></i> Adicionar frete</button>
-							<button class="btn btn-primary"><i class="fas fa-percent"></i> Aplicar desconto</button>
-						</div>
+					<div class="col-1"></div>
+					<div class="col-6">
 
-						<div id="new_order_data" class="col-12 card mb-4">
-							<h4 id="the_order_id" data-order-id="<?php echo $order_id; ?>" class="mb-4">Pedido - <?php echo '#' . $order_id; ?></h4>
+						<div id="new_order_data" class="col-12 card mb-4 pt-4">
+
+							<div id="order_header" class="header col-12 d-flex p-0 mb-4 pb-2 border-bottom">
+								<div class="col-6 pl-0 ">
+									<h4 id="the_order_id" data-order-id="<?php echo $order_id; ?>" class="">Pedido - <?php echo '#' . $order_id; ?></h4>
+									<div class="d-flex mt-1">
+										<p class="mb-0 mr-2"><i class="fas fa-calendar-day"></i> <?php echo date("d/m/Y"); ?></p>
+										<p class="mb-0"><i class="fas fa-clock"></i> <?php echo date('H:i'); ?></p>
+									</div>
+								</div>
+								<!-- /End titulo e infos -->
+
+								<div id="user_info" class="col-6 d-flex pr-0">
+									<div class="col-2 pl-0">
+										<div class="border d-flex justify-content-center align-items-center" style="width: 56px; height: 56px; border-radius: 100%">
+											<i class="fas fa-user-alt" style="font-size: 28px;"></i>
+										</div>
+									</div>
+									<div class="col-10 d-flex flex-column justify-content-center pr-0">
+										<span class="">Nome do cliente</span>
+										<p class="m-0">CPF: 000.000.000-99</p>
+									</div>
+								</div>
+								<!-- /End #user_info -->
+							</div>
+							<!-- /End #order_header -->
 
 							<div id="order_products" class="">
 								<table class="table">
 									<thead>
-										<tr>
-											<th scope="col">Qtd.</th>
-											<th scope="col">Nome</th>
-											<th scope="col">Ref.</th>
-											<th scope="col">Val. Unit.</th>
-											<th scope="col">Val. Total</th>
+										<tr class="row">
+											<th class="col-5" scope="col">Produto(s)</th>
+											<th class="col-2" scope="col">Ref.</th>
+											<th class="col-1" scope="col">Qtd.</th>
+											<th class="col-2" scope="col">Val. Unit.</th>
+											<th class="col-2" scope="col">Val. Total</th>
 										</tr>
 									</thead>
 									<tbody>
-										
+										<tr id="" class="fake-lines row pl-2 pr-2">
+											<th class="col-12 p-0"><span class="mt-2 mb-2" style="width: 100%; height: 12px; background: #DBDBDB; display: block;"></span></th>
+											<th class="col-12 p-0"><span class="mt-2 mb-2" style="width: 100%; height: 12px; background: #DBDBDB; display: block;"></span></th>
+											<th class="col-12 p-0"><span class="mt-2 mb-2" style="width: 100%; height: 12px; background: #DBDBDB; display: block;"></span></th>
+										</tr>
 									</tbody>
 								</table>
 							</div>
@@ -275,22 +299,33 @@ class Uc_Dshbrd_Admin {
 							<div id="order_services" class="">
 								<table class="table">
 									<thead>
-										<tr>
-											<th scope="col">Qtd.</th>
-											<th scope="col">Serviços(s)</th>
-											<th scope="col">Unid.</th>
-											<th scope="col">Val. Unit.</th>
-											<th scope="col">Val. Total</th>
+										<tr class="row">
+											<th class="col-5" scope="col">Serviço(s)</th>
+											<th class="col-2" scope="col">Ref.</th>
+											<th class="col-1" scope="col">Qtd.</th>
+											<th class="col-2" scope="col">Val. Unit.</th>
+											<th class="col-2" scope="col">Val. Total</th>
 										</tr>
 									</thead>
 									<tbody>
-										
+										<tr class="fake-lines row pl-2 pr-2">
+											<th class="col-12 p-0"><span class="mt-2 mb-2" style="width: 100%; height: 12px; background: #DBDBDB; display: block;"></span></th>
+											<th class="col-12 p-0"><span class="mt-2 mb-2" style="width: 100%; height: 12px; background: #DBDBDB; display: block;"></span></th>
+											<th class="col-12 p-0"><span class="mt-2 mb-2" style="width: 100%; height: 12px; background: #DBDBDB; display: block;"></span></th>
+										</tr>
 									</tbody>
 								</table>
 							</div>
 							<!-- /End #order_services -->
 						</div>
 						<!-- /End #new_order_data  -->
+
+						<div class="col-12 mt-4 mb-4 p-0 d-flex justify-content-end">
+							<!-- Button trigger modal -->
+							<button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-user-plus"></i> Adicionar cliente ao pedido</button>
+							<button class="btn btn-primary mr-2"><i class="fas fa-shipping-fast"></i> Adicionar frete</button>
+							<button class="btn btn-primary"><i class="fas fa-percent"></i> Aplicar desconto</button>
+						</div>
 
 						<div class="d-flex justify-content-end">
 							<div class="col-4 d-flex-column">
@@ -550,18 +585,24 @@ class Uc_Dshbrd_Admin {
 			{
 				var valTotal = calc_total_item(qty, valUnt);
 
-				let itemToAdd = '<tr><td>'+ qty +'</td><td>'+ name +'</td><td>'+ ref +'</td><td>'+ valUnt +'</td><td><input class="amount_item" type="text" disabled value="'+ valTotal +'"></td></tr>';
+				let itemToAdd = '<tr class="d-flex" style="font-size: 11px;"><td class="col-5" style="font-weight: 700;">'+ name +'</td><td class="col-2">'+ ref +'</td><td class="col-1">'+ qty +'</td><td class="col-2">'+ valUnt +'</td><td class="amount_item col-2">'+ valTotal +'</td></tr>';
 
 				if (itemType == 'servico')
 				{
-					var tableToAdd = jQuery('#order_services > table > tbody');
-					tableToAdd.append(itemToAdd);
+					var tableToAdd = jQuery('#order_services > table > tbody'),
+						fakeLines = jQuery('#order_services > table > tbody > .fake-lines');
+
+					tableToAdd.prepend(itemToAdd);
+					fakeLines.children().last().remove();
 					total_services_on_order();
 				}
 				else
 				{
-					var tableToAdd = jQuery('#order_products > table > tbody');
-					tableToAdd.append(itemToAdd);
+					var tableToAdd = jQuery('#order_products > table > tbody'),
+						fakeLines = jQuery('#order_products > table > tbody > .fake-lines');
+
+					tableToAdd.prepend(itemToAdd);
+					fakeLines.children().last().remove();
 					sum_total_products_added();
 				}
 			}
@@ -619,12 +660,12 @@ class Uc_Dshbrd_Admin {
 			 */
 			function total_services_on_order()
 			{
-				var totalOnTable = jQuery('#order_services tbody tr input.amount_item');
+				var totalOnTable = jQuery('#order_services tbody tr td.amount_item');
 
 				var sum = 0.0;
 				totalOnTable.each(function(){
 
-					sum = parseFloat(jQuery(this).val()) + sum;
+					sum = parseFloat(jQuery(this).text()) + sum;
 					
 				});
 				jQuery('#total_services').text('R$' + sum).maskMoney();
@@ -639,12 +680,12 @@ class Uc_Dshbrd_Admin {
 			 */
 			function sum_total_products_added()
 			{
-				var valuesOnTable = jQuery('#order_products tbody tr input.amount_item');
+				var valuesOnTable = jQuery('#order_products tbody tr td.amount_item');
 
 				var sumTotal = 0.0;
 				valuesOnTable.each(function(){
 
-					sumTotal = parseFloat(jQuery(this).val()) + sumTotal;
+					sumTotal = parseFloat(jQuery(this).text()) + sumTotal;
 				});
 				jQuery('#total_products').maskMoney().text('R$' + sumTotal);
 			}
