@@ -266,8 +266,8 @@ class Uc_Dshbrd_Admin {
 										</div>
 									</div>
 									<div class="col-10 d-flex flex-column justify-content-center pr-0">
-										<span class="">Nome do cliente</span>
-										<p class="m-0">CPF: 000.000.000-99</p>
+										<span class="user_name">Nome do cliente</span>
+										<p class="m-0 user_email">user@domain.com</p>
 									</div>
 								</div>
 								<!-- /End #user_info -->
@@ -322,7 +322,7 @@ class Uc_Dshbrd_Admin {
 
 						<div class="col-12 mt-4 mb-4 p-0 d-flex justify-content-end">
 							<!-- Button trigger modal -->
-							<button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-user-plus"></i> Adicionar cliente ao pedido</button>
+							<button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#customerModal"><i class="fas fa-user-plus"></i> Adicionar cliente ao pedido</button>
 							<button class="btn btn-primary mr-2"><i class="fas fa-shipping-fast"></i> Adicionar frete</button>
 							<button class="btn btn-primary"><i class="fas fa-percent"></i> Aplicar desconto</button>
 						</div>
@@ -369,12 +369,14 @@ class Uc_Dshbrd_Admin {
 					<!-- /End new order -->
 
 					<!-- Modal Insert Customer -->
-					<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div id="customerModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">Adicionar cliente ao pedido</h5>
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<h5 class="modal-title" id="customerModalLabel">Buscar cliente</h5>
+
+									<button type="button" class="btn btn-primary mr-4 float-right" data-toggle="modal" data-target="#registerCustomer"><i class="fas fa-user-plus"></i> Cadastrar cliente</button>
+									<button type="button" class="close position-absolute" style="top: 12px; right: 12px;" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
 								</div>
@@ -405,9 +407,8 @@ class Uc_Dshbrd_Admin {
 					</div>
 					<!-- /End #modal_insert_customer -->
 
-
 					<!-- Modal finalizar compra/imprimir nota -->
-					<div class="modal fade" id="modalFinalizarCompra" tabindex="-1" role="dialog" aria-labelledby="modalFinalizarCompra" aria-hidden="true">
+					<div id="modalFinalizarCompra" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalFinalizarCompra" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered">
 							<div class="modal-content">
 							<div class="modal-header">
@@ -529,7 +530,7 @@ class Uc_Dshbrd_Admin {
 			}
 
 			// Ajax add customer on order
-			function add_customer_on_order(order_id, customer_id)
+			function add_customer_on_order(order_id, customer_id, customer_name, customer_email)
 			{
 				jQuery.ajax({
 					type: 'POST',
@@ -542,8 +543,12 @@ class Uc_Dshbrd_Admin {
 					success: function(data)
 					{
 						// var success_alert = '<div class="alert alert-success fixed-bottom" role="alert">Adicionado com sucesso!</div>';
-						// jQuery('#exampleModal').append(success_alert);
-						jQuery('#exampleModal').modal('hide');
+						// jQuery('#customerModal').append(success_alert);
+						jQuery('#user_info .user_name').text(customer_name);
+						jQuery('#user_info .user_email').text(customer_email);
+						jQuery('#customerModal').modal('hide');
+						// console.log(customer_name);
+						// console.log(customer_email);
 					}
 				});
 			}
@@ -922,7 +927,7 @@ class Uc_Dshbrd_Admin {
 				$customer_type 		= $user->user_type;
 				$customer_avatar_url = get_avatar_url($customer_id, ['size' => '40']);
 				?>
-				<div class="card" customer-id="<?php echo $customer_id; ?>" customer-name="<?php echo $customer_name; ?>" customer-type="<?php echo $customer_type;?>">
+				<div class="card" customer-id="<?php echo $customer_id; ?>" customer-name="<?php echo $customer_name; ?>" customer-email="<?php echo $customer_email; ?>" customer-type="<?php echo $customer_type;?>">
 					<div class="row">
 						<div class="col-3">
 							<img src="<?php echo $customer_avatar_url; ?>" alt="">
@@ -942,7 +947,7 @@ class Uc_Dshbrd_Admin {
 
 					</div>
 				</div>
-				<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_customer_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('customer-id'), jQuery(this).prev().attr('customer-name'), jQuery(this).prev().attr('customer-type'))">Adicionar ao Pedido</button>
+				<button type="button" id="" class="btn btn-primary btn-lg btn-block" onclick="add_customer_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('customer-id'), jQuery(this).prev().attr('customer-name'), jQuery(this).prev().attr('customer-email'), jQuery(this).prev().attr('customer-type'))">Adicionar ao Pedido</button>
 				
 				<?php		
 			endforeach;
