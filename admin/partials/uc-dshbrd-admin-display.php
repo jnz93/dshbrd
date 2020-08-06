@@ -280,6 +280,83 @@
             </div>
             <!-- /End #modal_insert_customer -->
 
+            <!-- Modal Register Customer -->
+            <div id="registerCustomer" class="modal fade" abindex="-1" role="dialog" aria-labelledby="registerCustomerLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="registerCustomerLabel">Cadastrar cliente</h5>
+
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="border-bottom">
+                                <form id="form_register_customer">
+                                    <div class="form-row mb-2">
+                                        <label for="uc_customer_name">Nome completo</label>
+                                        <input type="text" class="form-control" id="uc_customer_name" placeholder="Ex: João Silva">
+                                    </div>
+
+                                    <div class="form-row mb-2">
+                                        <label for="uc_customer_email">E-mail</label>
+                                        <input type="email" class="form-control" id="uc_customer_email" placeholder="usuario@domain.com">
+                                    </div>
+
+                                    <div class="form-row mb-2">
+                                        <label for="uc_customer_number">Telefone(whatsapp)</label>
+                                        <input type="tel" class="form-control" id="uc_customer_number" placeholder="(00) 9 0000-0000">
+                                    </div>
+                                    
+                                    <div class="m-2 border-bottom"></div>
+
+                                    <div class="form-row mb-2">
+                                        <div class="form-group col-md-6">
+                                            <label for="uc_customer_doc">CPF:</label>
+                                            <input type="text" class="form-control" id="uc_customer_doc" placeholder="000.000.000-00">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="uc_customer_date">Data de nascimento</label>
+                                            <input type="text" class="form-control" id="uc_customer_date" placeholder="00/00/0000">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row mb-2">
+                                        <div class="form-group col-md-6">
+                                            <label for="uc_customer_address">Endereço:</label>
+                                            <input type="text" class="form-control" id="uc_customer_address" placeholder="Rua tal, 000">
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label for="uc_customer_city">Cidade</label>
+                                            <input type="text" class="form-control" id="uc_customer_city" placeholder="Ex: Santa Lúcia">
+                                        </div>
+                                    </div>
+
+                                </form>
+                                <!-- /End #add_customer_to_order -->
+                            </div>
+                            <!-- /End #form_search_customer -->
+
+                            <div id="register-customer-messages" class="row" style="height: 60px; justify-content: center; align-content: center;">
+                                <div class="alert alert-success d-none" role="alert">
+                                    A simple success alert—check it out!
+                                </div>
+
+                                <div class="alert alert-danger d-none" role="alert">
+                                    A simple danger alert—check it out!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" onclick="submit_customer_data()">Cadastrar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Modal finalizar compra/imprimir nota -->
             <div id="modalFinalizarCompra" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalFinalizarCompra" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -530,12 +607,12 @@
     }
 
     /**
-        * Function total_services_on_order()
-        * 
-        * Soma do total de serviços adicionados na nota
-        * 
-        * @since beta_1.0.0
-        */
+    * Function total_services_on_order()
+    * 
+    * Soma do total de serviços adicionados na nota
+    * 
+    * @since beta_1.0.0
+    */
     function total_services_on_order()
     {
         var totalOnTable = jQuery('#order_services tbody tr td.amount_item');
@@ -550,12 +627,12 @@
     }
 
     /**
-        * Function sum_total_products_added()
-        * 
-        * Soma do total de produtos adicionados na nota
-        * 
-        * @since beta_1.0.0
-        */
+    * Function sum_total_products_added()
+    * 
+    * Soma do total de produtos adicionados na nota
+    * 
+    * @since beta_1.0.0
+    */
     function sum_total_products_added()
     {
         var valuesOnTable = jQuery('#order_products tbody tr td.amount_item');
@@ -569,15 +646,65 @@
     }
 
     /**
-        * Function reload_page_for_new_order
-        *
-        * Força o reload da página para gerar um novo pedido
-        *
-        * @since beta_1.0.0
-        */
+    * Function reload_page_for_new_order
+    *
+    * Força o reload da página para gerar um novo pedido
+    *
+    * @since beta_1.0.0
+    */
     function reload_page_for_new_order()
     {
         document.location.reload(true);
+    }
+
+    /**
+    * Function submit_customer_data
+    * 
+    * Submete informações do cliente para cadastro no back-end via ajax
+    *
+    * @since beta_1.1.0
+    */
+    function submit_customer_data()
+    {
+        var admin_url_ajax = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
+            wrapper_results = jQuery('#wrapper_results'),
+            loader = jQuery('#lds-loader');
+
+        var customerName    = jQuery('#uc_customer_name').val(),
+            customerEmail   = jQuery('#uc_customer_email').val(),
+            customerNumber  = jQuery('#uc_customer_number').val(),
+            customerDoc     = jQuery('#uc_customer_doc').val(),
+            customerDate    = jQuery('#uc_customer_date').val(),
+            customerAddress = jQuery('#uc_customer_address').val(),
+            customerCity    = jQuery('#uc_customer_city').val();
+
+        var dataUser = customerName + '///' + customerEmail + '///' + customerNumber + '///' + customerDoc + '///' + customerDate + '//' + customerAddress + '///' + customerCity;
+
+        jQuery.ajax({
+            type: 'POST',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            data: {
+                action: 'submit_register_customer',
+                data: dataUser
+            },
+            beforeSend: function(){
+                loader = jQuery('#lds-loader')
+                loader.show().fadeIn();
+            },
+            success: function(data){
+                console.log(data);
+                jQuery('#register-customer-messages .alert-success').removeClass('d-none');
+                jQuery('#registerCustomer').removeClass('show').delay( 1800 );
+            },
+            error: function(data){
+                console.log(data);
+                jQuery('#register-customer-messages .alert-danger').removeClass('d-none');
+            },
+            complete: function(){
+                loader.hide().fadeOut();
+            }
+        });
+
     }
 
 </script>

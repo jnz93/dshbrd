@@ -65,6 +65,7 @@ class Uc_Dshbrd_Admin {
 		add_action('wp_ajax_add_product_and_update_order', array($this, 'add_product_and_update_order')); // Executed whe logged in
 		add_action('wp_ajax_add_customer_and_update_order', array($this, 'add_customer_and_update_order')); // Executed whe logged in
 		add_action('wp_ajax_calculate_subtotal_curr_order', array($this, 'calculate_subtotal_curr_order')); // Executed whe logged in
+		add_action('wp_ajax_submit_register_customer', array($this, 'submit_register_customer')); // Executed whe logged in
 
 		# ADD SHORTCODES
 		add_shortcode('apply_backup_services', array($this, 'apply_backup_services_from_list'));
@@ -673,6 +674,55 @@ class Uc_Dshbrd_Admin {
 		$total_order 	= $order->calculate_totals();
 
 		echo $total_order;
+
+		die();
+	}
+
+
+	/**
+	 * Function submit_register_customer
+	 * 
+	 * Função recebe os dados via ajax e efetua a inserção de um novo cliente no banco
+	 * 
+	 * @since beta_1.1.0
+	 */
+	public function submit_register_customer()
+	{
+		$data 	= $_POST['data'];
+		$data 	= explode('///', $data);
+
+		$c_fullname 	= trim($data[0]);
+		$c_fullname 	= explode(' ', $c_fullname);
+
+		$c_first_name 	= array_shift($c_fullname);
+		$c_last_name 	= implode(' ', $c_fullname);
+		$c_email 		= trim($data[1]);
+		$c_number 		= trim($data[2]);
+		$c_doc 			= trim($data[3]);
+		$c_date 		= trim($data[4]);
+		$c_address 		= trim($data[5]);
+		$c_city 		= trim($data[6]);
+
+		$userdata = array(
+			'ID'                    => 0,
+			'user_login'            => $c_first_name,
+			'user_nicename'         => $c_first_name,
+			'user_email'            => $c_email,
+			'display_name'          => $c_first_name,
+			'nickname'              => $c_first_name,
+			'first_name'            => $c_first_name,
+			'last_name'             => $c_last_name,
+			'role'                  => 'customer',
+		);
+
+		$user_id = wp_insert_user($userdata);
+		
+		if(!is_wp_error($user_id)) :
+			update_user_meta($user_id, 'customer_phone_number', $c_number);
+			echo $c_first_name . ' cadastrado(a) com sucesso!';
+		else :
+			echo wp_remote_retrieve_response_message($user_id);
+		endif;
 
 		die();
 	}
