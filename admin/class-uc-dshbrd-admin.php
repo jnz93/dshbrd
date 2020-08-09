@@ -66,6 +66,7 @@ class Uc_Dshbrd_Admin {
 		add_action('wp_ajax_add_customer_and_update_order', array($this, 'add_customer_and_update_order')); // Executed whe logged in
 		add_action('wp_ajax_calculate_subtotal_curr_order', array($this, 'calculate_subtotal_curr_order')); // Executed whe logged in
 		add_action('wp_ajax_submit_register_customer', array($this, 'submit_register_customer')); // Executed whe logged in
+		add_action('wp_ajax_apply_order_discount', array($this, 'apply_order_discount')); // Executed whe logged in
 
 		# ADD SHORTCODES
 		add_shortcode('apply_backup_services', array($this, 'apply_backup_services_from_list'));
@@ -723,6 +724,25 @@ class Uc_Dshbrd_Admin {
 		else :
 			echo wp_remote_retrieve_response_message($user_id);
 		endif;
+
+		die();
+	}
+
+	/**
+	 * Function apply_order_discount
+	 * 
+	 * Função recebe o cupom de desconto via ajax e efetua ações de validação do código e aplicação no pedido.
+	 * 
+	 * @since beta_1.1.0
+	 */
+	public function apply_order_discount()
+	{
+		$order_id 		= $_POST['order_id'];
+		$code_discount 	= $_POST['code'];
+
+		$coupon = wc_get_coupon_id_by_code( 'cupom50%' );
+
+		return $coupon;
 
 		die();
 	}

@@ -197,8 +197,9 @@
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#customerModal"><i class="fas fa-user-plus"></i> Adicionar cliente ao pedido</button>
                     <button class="btn btn-primary mr-2"><i class="fas fa-shipping-fast"></i> Adicionar frete</button>
-                    <button class="btn btn-primary"><i class="fas fa-percent"></i> Aplicar desconto</button>
+                    <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#discountModal"><i class="fas fa-percent"></i> Aplicar desconto</button>
                 </div>
+                <!-- /End buttons -->
 
                 <div class="d-flex justify-content-end">
                     <div class="col-4 d-flex-column">
@@ -355,6 +356,48 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+
+            <!-- Links
+                https://stackoverflow.com/questions/52646869/add-a-discount-programmatically-to-an-order-in-woocommerce-3-2
+                https://wisdmlabs.com/blog/apply-discount-coupon-automatically-woocommerce/
+             -->
+            <div id="discountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="discountModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="discountModalLabel">Aplicar Desconto</h5>
+
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="border-bottom">
+                                <form id="add_customer_to_order" action="">
+                                    <div class="form-row">
+                                        <div class="form-group col-12">
+                                            <label for="order_discount" class="form-check-label mb-2">Insira o código do cupon de desconto</label>
+                                            <input type="text" id="order_discount" name="order_discount" class="form-control col-12" placeholder="Digite o código do desconto">
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- /End #add_customer_to_order -->
+                            </div>
+                            <!-- /End #form_search_customer -->
+
+                            <div id="customer-results" class="">
+                            
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="submit_discount()">Aplicar desconto</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Modal finalizar compra/imprimir nota -->
@@ -707,4 +750,39 @@
 
     }
 
+    /**
+    * Function submit_discount
+    *
+    * Pega o código digitado e envia para o back-end via ajax
+    *
+    * @since beta_1.1.0
+    */
+    function submit_discount()
+    {
+        var codeDiscount = jQuery('#order_discount').val();
+        console.log(codeDiscount.trim());
+
+        jQuery.ajax({
+            type: 'POST',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            data: {
+                action: 'apply_order_discount',
+                string: codeDiscount
+            },
+            beforeSend: function()
+            {
+                // loader = jQuery('#lds-loader')
+                // loader.show().fadeIn();
+            },
+            success: function(data){
+                // wrapper_results.html(data);
+                console.log(data);
+            },
+            complete: function()
+            {
+                // loader.hide().fadeOut();
+            }
+
+        });
+    }
 </script>
