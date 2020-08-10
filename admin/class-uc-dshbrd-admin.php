@@ -66,6 +66,7 @@ class Uc_Dshbrd_Admin {
 		add_action('wp_ajax_add_customer_and_update_order', array($this, 'add_customer_and_update_order')); // Executed whe logged in
 		add_action('wp_ajax_calculate_subtotal_curr_order', array($this, 'calculate_subtotal_curr_order')); // Executed whe logged in
 		add_action('wp_ajax_submit_register_customer', array($this, 'submit_register_customer')); // Executed whe logged in
+		add_action('wp_ajax_custom_update_order_status', array($this, 'custom_update_order_status')); // Executed when logged in
 
 		# ADD SHORTCODES
 		add_shortcode('apply_backup_services', array($this, 'apply_backup_services_from_list'));
@@ -724,6 +725,33 @@ class Uc_Dshbrd_Admin {
 			echo wp_remote_retrieve_response_message($user_id);
 		endif;
 
+		die();
+	}
+
+
+	/**
+	 * Function custom_update_order_status
+	 * 
+	 * Recebe o método de pagamento via ajax e faz o update do status do pedido e adiciona uma nota com método selecionado
+	 * 
+	 * @since beta_1.1.0
+	 */
+	public function custom_update_order_status()
+	{
+		$payment_selected = $_POST['method'];
+		$order_id = $_POST['order_id'];
+	
+		$order = new WC_Order($order_id);
+		$order->update_status('wc-completed', 'order_note');
+		$order->customer_note = $payment_selected;
+		update_post_meta($order_id, '_payment_method', $payment_selected);
+		update_post_meta($order_id, '_customer_note', 'Método de pagamento: ' . $payment_selected);
+		// update_post_meta($order_id, 'order_note', $payment_selected);
+		
+		// echo '<pre>';
+		// print_r($order);
+		// echo '</pre>';d
+		echo 'Pedido concluído com sucesso!';
 		die();
 	}
 }

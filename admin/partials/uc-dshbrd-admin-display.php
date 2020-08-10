@@ -11,8 +11,21 @@
  * @package    Uc_Dshbrd
  * @subpackage Uc_Dshbrd/admin/partials
  */
-?>
 
+// Get payment gateways   
+$gateways = WC()->payment_gateways->get_available_payment_gateways();
+$enabled_gateways = array();                        
+if( $gateways ) {
+    foreach( $gateways as $gateway ) {
+
+        if( $gateway->enabled == 'yes' ) {
+
+            $enabled_gateways[] = $gateway->title;
+
+        }
+    }
+}
+?>
 <div class="">
 			
     <header class="d-none">
@@ -237,7 +250,7 @@
                 </div>
                 <!-- /End totals -->
 
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalFinalizarCompra">Finalizar compra</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#selectPaymentMethod">Finalizar compra</button>
             </div>
             <!-- /End new order -->
 
@@ -357,24 +370,42 @@
                 </div>
             </div>
 
-            <!-- Modal finalizar compra/imprimir nota -->
-            <div id="modalFinalizarCompra" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalFinalizarCompra" aria-hidden="true">
+            <!-- Modal selecionar pagamento -->
+            <div id="selectPaymentMethod" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="selectPaymentMethod" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title text-center" style="width: 100%;">Pedido <?php echo "#" . $order_id; ?> finalizado com sucesso!</h4>
+                        <h4 class="modal-title">Formas de pagamento</h4>
                         <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 16px;"><span aria-hidden="true">&times;</span></button>
                     </div>
-                    <div class="modal-body d-flex justify-content-center">
-                        <h2><i class="fas fa-check-circle"></i></h2>
+                    <div class="modal-body row justify-content-center">
+                        <div id="payment-box" class="form-row mb-2">
+                            <label class="col-12" for="select_method">Selecione a forma de pagamento</label>
+                            <select class="form-control col-12" id="select_method" data-order-id="<?php echo $order_id; ?>">
+                                <option value="default" selected>Clique para selecionar uma opção</option>
+                                <?php 
+                                    foreach($enabled_gateways as $gateway)
+                                    {
+                                        echo '<option value="'. $gateway .'">'. $gateway . '</option>' ;
+                                    }
+                                ?>
+                            </select>
+                        </div>
+
+                        <div id="result-payment" class="d-flex flex-column justify-content-center align-content-center">
+                            <div id="checkout-lds-loader" class="lds-facebook position-absolute d-none" style="z-index: 999;"><div></div><div></div><div></div>
+                        </div>
+
                     </div>
+
                     <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary mr-2"><i class="fas fa-print"></i> Imprimir pedido</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reload_page_for_new_order()"><i class="fas fa-cart-plus"></i> Adicionar novo</button>
+                        <button type="button" class="btn btn-primary mr-2" onclick="send_data_for_update_order_status(jQuery(this))"><i class="fas fa-check-circle"></i> Confirmar pedido</button>
+                        <button type="button" class="btn btn-primary mr-2 d-none"><i class="fas fa-print"></i> Imprimir pedido</button>
+                        <button type="button" class="btn btn-secondary d-none" data-dismiss="modal" onclick="reload_page_for_new_order()"><i class="fas fa-cart-plus"></i> Adicionar novo</button>
                     </div>
                 </div>
             </div>
-            <!-- /End #modalFinalizarCompra -->
+            <!-- /End #selectPaymentMethod -->
         </div>
         <!-- /End #new_order  -->
 
@@ -705,6 +736,41 @@
             }
         });
 
+    }
+
+    function send_data_for_update_order_status(el)
+    {
+        var paymentSelected = jQuery('#select_method').val(),
+            order_id = jQuery('#select_method').attr('data-order-id'),
+            checkoutLoader = jQuery('#checkout-lds-loader');
+        
+        var successMessage = '<h4 class="modal-title text-center mb-3">Pedido #'+ order_id +' finalizado com sucesso!</h4><i class="fas fa-check-circle text-center mb-3"></i>',
+            errorMessage = '<h4 class="modal-title text-center" style="width: 100%;">Houve um problema com o pedido #'+ order_id +'. Revise tente novamente.</h4><i class="fas fa-exclamation-circle"></i>';
+
+        jQuery.ajax({
+            type: 'POST',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            data: {
+                action: 'custom_update_order_status',
+                method: paymentSelected,
+                order_id: order_id
+            },
+            beforeSend: function()
+            {
+                checkoutLoader.removeClass('d-none').fadeIn();
+            },
+            success: function(data)
+            {
+                jQuery('#payment-box').addClass("d-none");
+                jQuery('#result-payment').append(successMessage);
+                el.addClass("d-none");
+                el.siblings().toggleClass('d-none');
+            },
+            complete: function()
+            {
+                checkoutLoader.addClass('d-none').fadeOut();
+            }
+        })
     }
 
 </script>
