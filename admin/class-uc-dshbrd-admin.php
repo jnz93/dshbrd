@@ -67,6 +67,7 @@ class Uc_Dshbrd_Admin {
 		add_action('wp_ajax_calculate_subtotal_curr_order', array($this, 'calculate_subtotal_curr_order')); // Executed whe logged in
 		add_action('wp_ajax_submit_register_customer', array($this, 'submit_register_customer')); // Executed whe logged in
 		add_action('wp_ajax_custom_update_order_status', array($this, 'custom_update_order_status')); // Executed when logged in
+		add_action('wp_ajax_print_nf_order', array($this, 'print_nf_order')); // Executed when logged in
 
 		# ADD SHORTCODES
 		add_shortcode('apply_backup_services', array($this, 'apply_backup_services_from_list'));
@@ -752,6 +753,133 @@ class Uc_Dshbrd_Admin {
 		// print_r($order);
 		// echo '</pre>';d
 		echo 'Pedido concluído com sucesso!';
+		die();
+	}
+
+
+	/**
+	 * Function print_nf_order
+	 * 
+	 * Recebe o ID da ordem, cria o objeto e retorna para impressão
+	 * 
+	 * @since beta_1.1.0
+	 */
+	public function print_nf_order()
+	{
+		// Order data
+		$order_id 		= $_POST['order_id'];
+		$order 			= new WC_Order($order_id);
+		$payment_method = $order->payment_method;
+		$order_status 	= $order->status;
+
+		// Array Items
+		$items = $order->items;
+		// echo '<pre>';
+		// print_r($order);
+		// echo '</pre>';
+		
+		// Customer data
+		$customer 		= get_userdata($order->customer_id);
+		$customer_name 	= $customer->display_name;
+		$customer_email = $customer->user_email;
+		
+		/**
+		 * https://pt.stackoverflow.com/questions/714/como-exportar-uma-p%C3%A1gina-html-php-para-pdf
+		 * https://github.com/dompdf/dompdf
+		 * http://www.sistemaseweb.com.br/Pagina/Detalhes/76/gerando-arquivo-pdf-em-php-a-partir-de-html-e-css-com-a-html2pdf
+		 */
+		?>
+		<div class="d-print-table col-12 ml-2 mr-2 border p-2">
+			<header class="header-info d-flex mb-2 border-bottom">
+				<div class="interprise-data col-6">
+					<h6>Cupini soluções em Informática</h6>
+					<span style="font-size: 10px; display: block;" class="mb-2">Avenida Orlando Luiz Zamprônio 236, sala 01 - centro</span>
+					<span style="font-size: 10px; display: block;" class="mb-2">85795-000 - Santa Lúcia, PR</span>
+					<span style="font-size: 10px; display: block;" class="mb-2">(45) 9 9843-1008</span>
+					<span style="font-size: 10px; display: block;" class="mb-2">https://cupiniinformatica.com.br/</span>
+					<span style="font-size: 10px; display: block;" class="mb-2">CNPJ: 22.695.242/0001-80</span>
+				</div>
+				<!-- /End .interprise-info -->
+				
+				<div class="customer-data col-6">
+					<h6>Dados do cliente</h6>
+					<span style="font-size: 10px; display: block;" class="mb-2"><?php echo 'Nome: ' . $customer_name; ?></span>
+					<span style="font-size: 10px; display: block;" class="mb-2"><?php echo 'E-mail: ' . $customer_email; ?></span>
+					<span style="font-size: 10px; display: none;" class="mb-2">Telefone: (45) 9 8830-4602</span>
+					<span style="font-size: 10px; display: none;" class="mb-2">Endereço: Rua do ipê, 189 - Centro. Santa Lúcia, PR</span>
+				</div>
+			</header>
+			<!-- /End .header-info -->
+
+			<div class="print-order-data mt-2">
+				<h4>Pedido #<?php echo $order_id; ?></h4>
+				<div class="order-status d-flex">
+					<span style="font-size: 10px;" class="mt-2 mb-2 mr-2"><?php echo 'Estatus: ' . $order_status; ?></span>
+					<span style="font-size: 10px;" class="mt-2 mb-2 mr-2"><?php echo 'Pagamento: ' . $payment_method; ?></span>
+					<span style="font-size: 10px;" class="mt-2 mb-2 mr-2"><?php echo 'Horário: ' . $order->date ?> </span>
+				</div>
+
+				<div id="print-order-products" class="order-content">
+					<table class="table table-sm">
+						<thead>
+							<tr class="d-flex">
+								<th class="col-5" scope="col">Produto(s)</th>
+								<th class="col-2" scope="col">Ref.</th>
+								<th class="col-1" scope="col">Qtd.</th>
+								<th class="col-2" scope="col">Val. Unit.</th>
+								<th class="col-2" scope="col">Val. Total</th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php
+						foreach( $items as $item) :
+							$product_name 		= $item['name'];
+							$product_id 		= $item['product_id'];
+							$product_qty 		= $item['quantity'];
+							$product_subtotal 	= $item['subtotal'];
+							$product_total 		= $item['total'];
+							$product_total_un 	= (float) $product_total / $product_qty;
+							
+							$output = '<tr class="d-flex" style="font-size: 11px;">
+								<td class="col-5" style="font-weight: 700;">'. $product_name .'</td><!-- #Produto -->
+								<td class="col-2">'. $product_id .'</td><!-- #Cod. -->
+								<td class="col-1">'. $product_qty .'</td><!-- #Quantidade -->
+								<td class="col-2">'. $product_total_un .'</td><!-- #Total Un. -->
+								<td class="amount_item col-2">'. $product_total .'</td> <!-- #Total -->
+							</tr>';
+
+							echo $output;
+						endforeach;
+						?>
+						<tr class="d-flex" style="font-size: 14px;">
+							<td class="col-9" style="font-weight: 700;">TOTAL:</td><!-- #Produto -->
+							<td class="col-3" style="font-weight: 700;"><?php echo 'R$' . $order->total; ?></td><!-- #Cod. -->
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div id="print-order-services" class="d-none d-print-none">
+					<table class="table table-sm">
+						<thead>
+							<tr class="d-flex">
+								<th class="col-5" scope="col">Serviço(s)</th>
+								<th class="col-2" scope="col">Ref.</th>
+								<th class="col-1" scope="col">Qtd.</th>
+								<th class="col-2" scope="col">Val. Unit.</th>
+								<th class="col-2" scope="col">Val. Total</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- /End .order-data -->
+		</div>
+		<!-- /End #print-nf -->
+		<?php
 		die();
 	}
 }

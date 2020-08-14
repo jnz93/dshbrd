@@ -26,7 +26,7 @@ if( $gateways ) {
     }
 }
 ?>
-<div class="">
+<div class="d-print-none">
 			
     <header class="d-none">
         <ul class="row">
@@ -96,10 +96,8 @@ if( $gateways ) {
                                 </div>
                             </div>
                         </form>
-                        <!-- /End #add_product -->
-
                     </div>
-                    <!-- /End #new_order_insert_data -->
+                    <!-- /End #add_product -->
 
                     <div id="search-service" class="tab-pane col-12 card fade" role="tabpanel" aria-labelledby="order-service-tab">
 
@@ -112,11 +110,11 @@ if( $gateways ) {
                                 </div>
                             </div>
                         </form>
-                        <!-- /End #add_service -->
 
                     </div>
-                    <!-- /End #new_order_insert_service -->
+                    <!-- /End #add_service -->
                 </div>
+                <!-- /End #new_order_insert_service -->
                 
                 <div class="flex-row d-flex justify-content-center">
                     <div id="lds-loader" class="lds-facebook position-absolute" style="display: none; z-index: 999;"><div></div><div></div><div></div></div>
@@ -254,7 +252,6 @@ if( $gateways ) {
             </div>
             <!-- /End new order -->
 
-            <!-- Modal Insert Customer -->
             <div id="customerModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -293,7 +290,6 @@ if( $gateways ) {
             </div>
             <!-- /End #modal_insert_customer -->
 
-            <!-- Modal Register Customer -->
             <div id="registerCustomer" class="modal fade" abindex="-1" role="dialog" aria-labelledby="registerCustomerLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -369,43 +365,45 @@ if( $gateways ) {
                     </div>
                 </div>
             </div>
+            <!-- /End #registerCustomer -->
 
-            <!-- Modal selecionar pagamento -->
             <div id="selectPaymentMethod" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="selectPaymentMethod" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Formas de pagamento</h4>
-                        <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 16px;"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body row justify-content-center">
-                        <div id="payment-box" class="form-row mb-2">
-                            <label class="col-12" for="select_method">Selecione a forma de pagamento</label>
-                            <select class="form-control col-12" id="select_method" data-order-id="<?php echo $order_id; ?>">
-                                <option value="default" selected>Clique para selecionar uma opção</option>
-                                <?php 
-                                    foreach($enabled_gateways as $gateway)
-                                    {
-                                        echo '<option value="'. $gateway .'">'. $gateway . '</option>' ;
-                                    }
-                                ?>
-                            </select>
+                        <div class="modal-header">
+                            <h4 class="modal-title">Formas de pagamento</h4>
+                            <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 16px;"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body row justify-content-center">
+                            <div id="payment-box" class="form-row mb-2">
+                                <label class="col-12" for="select_method">Selecione a forma de pagamento</label>
+                                <select class="form-control col-12" id="select_method" data-order-id="<?php echo $order_id; ?>">
+                                    <option value="default" selected>Clique para selecionar uma opção</option>
+                                    <?php 
+                                        foreach($enabled_gateways as $gateway)
+                                        {
+                                            echo '<option value="'. $gateway .'">'. $gateway . '</option>' ;
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+
+                            <div id="result-payment" class="d-flex flex-column justify-content-center align-content-center">
+                                <div id="checkout-lds-loader" class="lds-facebook position-absolute d-none" style="z-index: 999;"><div></div><div></div><div></div></div>
+                            </div>
+
                         </div>
 
-                        <div id="result-payment" class="d-flex flex-column justify-content-center align-content-center">
-                            <div id="checkout-lds-loader" class="lds-facebook position-absolute d-none" style="z-index: 999;"><div></div><div></div><div></div>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary mr-2" onclick="send_data_for_update_order_status(jQuery(this))"><i class="fas fa-check-circle"></i> Confirmar pedido</button>
+                            <button type="button" class="btn btn-primary mr-2 d-none" onclick="print_curr_order()"><i class="fas fa-print"></i> Imprimir pedido</button>
+                            <button type="button" class="btn btn-secondary d-none" data-dismiss="modal" onclick="reload_page_for_new_order()"><i class="fas fa-cart-plus"></i> Adicionar novo</button>
                         </div>
-
-                    </div>
-
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary mr-2" onclick="send_data_for_update_order_status(jQuery(this))"><i class="fas fa-check-circle"></i> Confirmar pedido</button>
-                        <button type="button" class="btn btn-primary mr-2 d-none"><i class="fas fa-print"></i> Imprimir pedido</button>
-                        <button type="button" class="btn btn-secondary d-none" data-dismiss="modal" onclick="reload_page_for_new_order()"><i class="fas fa-cart-plus"></i> Adicionar novo</button>
                     </div>
                 </div>
             </div>
             <!-- /End #selectPaymentMethod -->
+
         </div>
         <!-- /End #new_order  -->
 
@@ -773,4 +771,40 @@ if( $gateways ) {
         })
     }
 
+    /**
+    * Function print_nf_order
+    *
+    * Envia o id do pedido atual e retorna um PDF para impressão
+    *
+    * @since beta_1.1.0
+    */ 
+    function print_curr_order()
+    {
+        var order_id = jQuery('#select_method').attr('data-order-id');
+
+        jQuery.ajax({
+            type: 'POST',
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            data: {
+                action: 'print_nf_order',
+                order_id: order_id
+            },
+            success: function(data)
+            {
+                // console.log(data);
+                // jQuery('#wpfooter').html(data);
+
+                var mywindow = window.open('', 'content-print', 'height=520,width=640');
+                mywindow.document.write('<html><head><title>Guia de pagamento</title>');
+                mywindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">');
+
+                /*optional stylesheet*/ //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+                mywindow.document.write('</head><body >');
+                mywindow.document.write(data);
+                mywindow.document.write('</body></html>');
+
+                return true;
+            }
+        });
+    }
 </script>
