@@ -794,8 +794,8 @@ if( $gateways ) {
                 // console.log(data);
                 // jQuery('#wpfooter').html(data);
 
-                var mywindow = window.open('', 'content-print', 'height=520,width=640');
-                mywindow.document.write('<html><head><title>Guia de pagamento</title>');
+                var mywindow = window.open('', 'content-print', 'height=800,width=720');
+                mywindow.document.write('<html><head><title>Pedido #' + order_id + '</title>');
                 mywindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">');
 
                 /*optional stylesheet*/ //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
