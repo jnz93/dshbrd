@@ -418,6 +418,10 @@ if( $gateways ) {
 
     function looking_for_product(value)
     {
+        jQuery('#add_product').submit(function(e)
+        {
+            e.preventDefault();
+        });
 
         var admin_url_ajax = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
             wrapper_results = jQuery('#wrapper_results'),
