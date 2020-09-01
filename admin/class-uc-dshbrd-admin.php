@@ -67,6 +67,7 @@ class Uc_Dshbrd_Admin {
 		add_action('wp_ajax_calculate_subtotal_curr_order', array($this, 'calculate_subtotal_curr_order')); // Executed whe logged in
 		add_action('wp_ajax_submit_register_customer', array($this, 'submit_register_customer')); // Executed whe logged in
 		add_action('wp_ajax_custom_update_order_status', array($this, 'custom_update_order_status')); // Executed when logged in
+		add_action('wp_ajax_print_nf_order', array($this, 'print_nf_order')); // Executed when logged in
 
 		# ADD SHORTCODES
 		add_shortcode('apply_backup_services', array($this, 'apply_backup_services_from_list'));
@@ -154,7 +155,8 @@ class Uc_Dshbrd_Admin {
 	{
 		// Search and return product by ID, Name or Ref;
 		$s = $_POST['string'];
-
+		$type_search = $_POST['s_type'];
+		
 		if (empty($s)) :
 			echo 'Termo de busca não fornecido.';
 			exit();
@@ -184,8 +186,11 @@ class Uc_Dshbrd_Admin {
 			),
 		);
 
-		$query = new WP_Query($args);
-		// $query = new WP_Query($args_meta);
+		if ($type_search == 'barcode') : 
+			$query = new WP_Query($args_meta);
+		else :
+			$query = new WP_Query($args);
+		endif;
 
 		if ($query->have_posts()) :
 			while($query->have_posts()) :
@@ -752,6 +757,193 @@ class Uc_Dshbrd_Admin {
 		// print_r($order);
 		// echo '</pre>';d
 		echo 'Pedido concluído com sucesso!';
+		die();
+	}
+
+
+	/**
+	 * Function print_nf_order
+	 * 
+	 * Recebe o ID da ordem, cria o objeto e retorna para impressão
+	 * 
+	 * @since beta_1.1.0
+	 */
+	public function print_nf_order()
+	{
+		// Order data
+		$order_id 		= $_POST['order_id'];
+		$order 			= new WC_Order($order_id);
+		$payment_method = $order->payment_method;
+		$order_status 	= $order->status;
+
+		// Array Items
+		$items = $order->items;
+
+		
+		// Customer data
+		$customer 		= get_userdata($order->customer_id);
+		$customer_name 	= $customer->display_name;
+		$customer_email = $customer->user_email;
+		
+		/**
+		 * https://pt.stackoverflow.com/questions/714/como-exportar-uma-p%C3%A1gina-html-php-para-pdf
+		 * https://github.com/dompdf/dompdf
+		 * http://www.sistemaseweb.com.br/Pagina/Detalhes/76/gerando-arquivo-pdf-em-php-a-partir-de-html-e-css-com-a-html2pdf
+		 */
+
+		// Produto x Serviços para tabela
+		$list_services = array();
+		$total_of_services = 0.0;
+
+		$list_products = array();
+		$total_of_products = 0.0;
+		foreach( $items as $item) :
+			$product_name 		= $item['name'];
+			$product_id 		= $item['product_id'];
+			$product_qty 		= $item['quantity'];
+			$product_subtotal 	= $item['subtotal'];
+			$product_total 		= $item['total'];
+			$product_total_un 	= (float) $product_total / $product_qty;
+			$product_ref 		= get_post_meta($product_id, '_sku', true);
+
+			$output = '<tr class="d-flex" style="font-size: 14px;">
+						<td class="col-5">'. $product_name .'</td><!-- #Produto -->
+						<td class="col-2">'. $product_ref .'</td><!-- #Cod. -->
+						<td class="col-1">'. $product_qty .'</td><!-- #Quantidade -->
+						<td class="col-2">'. $product_total_un .'</td><!-- #Total Un. -->
+						<td class="amount_item col-2">'. $product_total .'</td> <!-- #Total -->
+					</tr>';							
+
+
+			if (has_term('servico', 'type-products', $product_id)) :
+				$list_services[] = $output;
+				$total_of_services += $product_total;
+			else :
+				$list_products[] = $output;
+				$total_of_products += $product_total;
+			endif;
+
+		endforeach;
+
+		// Tratamento de data e horário do pedido
+		$date_of_order 	= $order->date_created;
+		$date_arr 		= explode('T', $date_of_order);
+
+		$date = $date_arr[0];
+		$date = explode('-', $date);
+		$date = $date[2] . '/' . $date[1] . '/' . $date[0];
+		
+		$time = $date_arr[1];
+		$time = explode('-', $time);
+		$time = $time[0];
+		?>
+		<div class="d-print-table col-12 ml-2 mr-2 border p-2">
+			<header class="header-info d-flex border-bottom row m-0 mb-2">
+				<div class="logotipo col-6 d-flex" style="align-items:center;">
+					<img class="p-0" src="https://cupiniinformatica.com.br/wp-content/uploads/2020/05/Logotipo_Prancheta-1-e1590723655493.png" alt="" style="width: 100%;">
+				</div>
+				<div class="interprise-data col-6">
+					<h6>Cupini soluções em Informática</h6>
+					<span style="font-size: 10px; display: block;" class="mb-2">Avenida Orlando Luiz Zamprônio 236, sala 01 - centro</span>
+					<span style="font-size: 10px; display: block;" class="mb-2">85795-000 - Santa Lúcia, PR</span>
+					<span style="font-size: 10px; display: block;" class="mb-2">(45) 9 9843-1008</span>
+					<span style="font-size: 10px; display: block;" class="mb-2">https://cupiniinformatica.com.br/</span>
+					<span style="font-size: 10px; display: block;" class="mb-2">CNPJ: 22.695.242/0001-80</span>
+				</div>
+				<!-- /End .interprise-info -->
+			</header>
+			<!-- /End .header-info -->
+
+			<div class="print-order-data mt-2">
+				<h4 class="">Pedido #<?php echo $order_id; ?></h4>
+				<div class="col-12 d-flex p-0 m-0">
+					<span style="font-size: 12px;" class="mt-2 mb-2 mr-2"><?php echo '<b>Situação:</b> ' . ($order_status == 'completed' ? 'Finalizado' : 'Incompleto'); ?></span>
+					<span style="font-size: 12px;" class="mt-2 mb-2 mr-2"><?php echo '<b>Pagamento:</b> ' . $payment_method; ?></span>
+					<span style="font-size: 12px;" class="mt-2 mb-2 mr-2"><?php echo '<b>Data:</b> ' . $date; ?> </span>
+					<span style="font-size: 12px;" class="mt-2 mb-2 mr-2"><?php echo '<b>Horário:</b> ' . $time; ?> </span>
+				</div>
+
+				<div class="customer-data col-12 p-0 pt-2 pb-2 m-0 mt-2">
+					<h6>Cliente</h6>
+					<span style="font-size: 12px; display: block;" class="mb-2"><?php echo '<b>Nome:</b> ' . $customer_name; ?></span>
+					<span style="font-size: 12px; display: block;" class="mb-2"><?php echo '<b>E-mail:</b> ' . $customer_email; ?></span>
+					<span style="font-size: 12px; display: none;" class="mb-2">Telefone: (45) 9 8830-4602</span>
+					<span style="font-size: 12px; display: none;" class="mb-2">Endereço: Rua do ipê, 189 - Centro. Santa Lúcia, PR</span>
+				</div>
+
+				<div id="print-order-products" class="order-content mt-2">
+					<table class="table table-sm">
+						<thead>
+							<tr class="d-flex">
+								<th class="col-5" scope="col">Produto(s)</th>
+								<th class="col-2" scope="col">Ref.</th>
+								<th class="col-1" scope="col">Qtd.</th>
+								<th class="col-2" scope="col">Val. Unit.</th>
+								<th class="col-2" scope="col">Val. Total</th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php
+						foreach ($list_products as $product) :
+							echo $product;
+						endforeach;
+						?>
+						<tr class="d-flex mt-3" style="font-size: 14px;">
+							<td class="col-10" style="font-weight: 700;">TOTAL:</td><!-- #Produto -->
+							<td class="col-2" style="font-weight: 700;"><?php echo 'R$' . $total_of_products; ?></td><!-- #Cod. -->
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div id="print-order-services" class="mb-4">
+					<table class="table table-sm">
+						<thead>
+							<tr class="d-flex">
+								<th class="col-5" scope="col">Serviço(s)</th>
+								<th class="col-2" scope="col">Ref.</th>
+								<th class="col-1" scope="col">Qtd.</th>
+								<th class="col-2" scope="col">Val. Unit.</th>
+								<th class="col-2" scope="col">Val. Total</th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php 
+						foreach ($list_services as $service) :
+							echo $service;
+						endforeach;
+						?>
+						<tr class="d-flex mt-3" style="font-size: 14px;">
+							<td class="col-10" style="font-weight: 700;">TOTAL:</td><!-- #Produto -->
+							<td class="col-2" style="font-weight: 700;"><?php echo 'R$' . $total_of_services; ?></td><!-- #Cod. -->
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- Totals -->
+				<table class="table table-sm col-7 mt-4">
+					<tbody>
+						<tr>
+							<th scope="row">Total de serviços: R$</th>
+							<td><?php echo $total_of_services; ?></td>
+						</tr>
+						<tr>
+							<th scope="row">Total de produtos: R$</th>
+							<td><?php echo $total_of_products; ?></td>
+						</tr>
+						<tr>
+							<th scope="row">TOTAL: R$</th>
+							<td><?php echo $order->total; ?></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- /End .order-data -->
+			<p class="mt-4 text-center">Produtos com garantia de 30 dias referente a defeitos de fábrica. Em casos de troca apresentar a embalagem original juntamente ao do produto</p>
+		</div>
+		<!-- /End #print-nf -->
+		<?php
 		die();
 	}
 }
