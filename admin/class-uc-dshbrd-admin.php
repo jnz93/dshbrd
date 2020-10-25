@@ -119,7 +119,9 @@ class Uc_Dshbrd_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/uc-dshbrd-admin.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'awesome-icons', 'https://kit.fontawesome.com/f18f521cf8.js', array(), $this->version, false);
 		wp_enqueue_script( 'bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js', array(), $this->version, false);
-		wp_enqueue_script( 'mask-money', plugin_dir_url( __FILE__ ) . 'js/maskMoney.min.js', array('jquery'), 'v3.1.1', false);
+		wp_enqueue_script( 'mask-money', plugin_dir_url( __FILE__ ) . 'js/maskMoney.min.js', array('jquery'), '3.1.1', false);
+		wp_enqueue_script( 'uikit-js', plugin_dir_url( __FILE__ ) . 'js/uikit.min.js', array('jquery'), '3.5.9', false);
+		wp_enqueue_script( 'uikit-icons', plugin_dir_url( __FILE__ ) . 'js/uikit-icons.min.js', array('jquery'), '3.5.9', false);
 	}
 
 	/** 
