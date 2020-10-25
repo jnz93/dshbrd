@@ -92,7 +92,7 @@ if( $gateways ) {
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label class="form-check-label mb-2" for="name_ref">Nome do produto / Ref.</label>
-                                    <input type="text" id="name_ref" name="name_ref" class="form-control col-12" oninput="looking_for_product(this.value)" placeholder="Digite o nome ou código de barras para procurar">
+                                    <input type="text" id="name_ref" name="name_ref" class="form-control col-12" onchange="looking_for_product(this.value, '<?php echo admin_url('admin-ajax.php'); ?>')" placeholder="Digite o nome ou código de barras para procurar">
                                 </div>
                             </div>
                         </form>
@@ -106,7 +106,7 @@ if( $gateways ) {
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label for="name_ref" class="form-check-label mb-2">Nome do serviço / Ref.</label>
-                                    <input type="text" id="" name="name_ref" class="form-control" onkeyup="looking_for_service(this.value)" placeholder="Digite o nome ou código para procurar">
+                                    <input type="text" id="" name="name_ref" class="form-control" onchange="looking_for_service(this.value)" placeholder="Digite o nome ou código para procurar">
                                 </div>
                             </div>
                         </form>

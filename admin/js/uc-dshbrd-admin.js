@@ -29,24 +29,25 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
-	function looking_for_product(value){
-		// '<?php echo admin_url('admin-ajax.php'); ?>';
-		var admin_url_ajax = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php";
-		var wrapper_results = $('#wrapper_results');
+	function looking_for_product(value, ajaxUrl){
+		var search = value,
+			ajaxUrl = ajaxUrl,
+			wrapperResults = $('#wrapper_results');
+		
 		jQuery.ajax({
 			type: 'POST',
-			url: admin_url_ajax,
+			url: ajaxUrl,
 			data: {
 				action: 'product_by_name_or_ref',
-				string: value
+				string: search
 			},
 			beforeSend: function()
 			{
 				var loader = '<div class="lds-facebook"><div></div><div></div><div></div></div>';
-				wrapper_results.before(loader);
+				wrapperResults.before(loader);
 			},
 			success: function(data){
-				wrapper_results.prepend(data);
+				wrapperResults.prepend(data);
 			},
 			complete: function()
 			{
