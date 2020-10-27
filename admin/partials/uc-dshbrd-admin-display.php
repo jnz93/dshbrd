@@ -825,4 +825,18 @@ if( $gateways ) {
             }
         });
     }
+
+    /**
+    * Function cleanResultContent
+    *
+    * @since beta_1.1.1
+    */
+    function cleanResultContent()
+    {
+        jQuery('#order-service, #order-product').click(function()
+        {
+            jQuery('#wrapper_results').html('');
+        });
+    }
+    cleanResultContent();
 </script>
