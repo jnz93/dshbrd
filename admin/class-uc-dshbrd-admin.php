@@ -245,6 +245,9 @@ class Uc_Dshbrd_Admin {
 				</div>
 				<button type="button" id="" class="btn btn-primary btn-lg mt-1 mb-4 mr-1 float-right" onclick="add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))"><i class="fas fa-cart-plus"></i> Adicionar ao Pedido</button>
 				<!-- /End template card product item -->
+				<script>
+					add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), '<?php echo $id; ?>', '<?php echo $title; ?>', '<?php echo $ref; ?>', jQuery('#product-<?php echo $id ?>').val(), '<?php echo ($promo_price != '' ? $promo_price : $price); ?>', '<?php echo (!empty($item_type_slug) ? $item_type_slug : 'produto' ) ?>');
+				</script>
 				<?php
 			endwhile;
 		

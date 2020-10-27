@@ -414,7 +414,7 @@ if( $gateways ) {
 
 <script type="text/javascript">
 
-    function looking_for_product(value)
+    function looking_for_product(value, ajaxUrl)
     {
         jQuery('#add_product').submit(function(e)
         {
@@ -435,12 +435,12 @@ if( $gateways ) {
             type = 'normal';
         }
 
-        var admin_url_ajax = window.location.protocol + "://" + window.location.host + "/wp-admin/admin-ajax.php",
+        var admin_url_ajax = ajaxUrl,
             wrapper_results = jQuery('#wrapper_results'),
             loader = jQuery('#lds-loader');
         jQuery.ajax({
             type: 'POST',
-            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            url: admin_url_ajax,
             data: {
                 action: 'product_by_name_or_ref',
                 string: value,
@@ -520,7 +520,6 @@ if( $gateways ) {
                 item_qtd: product_qty,
             },
             success: function(data){
-                // console.log(data);
                 insert_product_on_list_order(product_id, product_name, product_ref, product_qty, product_unt_val, product_type);
                 show_subtotal_curr_order(order_id);
             }
