@@ -97,16 +97,16 @@ if( $gateways ) {
                             <li>
                                 <div class="form-row">
                                     <div class="form-group col-12">
-                                        <label class="form-check-label mb-2" for="name_ref">Leitor de Código de Barras</label>
-                                        <input type="text" id="name_ref" name="name_ref" class="form-control col-12" onchange="looking_for_product_by_ref(this.value, '<?php echo admin_url('admin-ajax.php'); ?>')" placeholder="Digite o nome ou código de barras para procurar">
+                                        <label class="form-check-label mb-2" for="search_by_ref">Leitor de Código de Barras</label>
+                                        <input type="text" id="search_by_ref" name="search_by_ref" class="form-control col-12" onchange="looking_for_product_by_ref(this.value, '<?php echo admin_url('admin-ajax.php'); ?>')" placeholder="Digite o nome ou código de barras para procurar">
                                     </div>
                                 </div>
                             </li>
                             <li>
                                 <div class="form-row">
                                     <div class="form-group col-12">
-                                        <label class="form-check-label mb-2" for="name_ref">Procura manual</label>
-                                        <input type="text" id="name_ref" name="name_ref" class="form-control col-12" onchange="looking_for_product_by_name(this.value, '<?php echo admin_url('admin-ajax.php'); ?>')" placeholder="Digite o nome ou código de barras para procurar">
+                                        <label class="form-check-label mb-2" for="search_by_name">Procura manual</label>
+                                        <input type="text" id="search_by_name" name="search_by_name" class="form-control col-12" onchange="looking_for_product_by_name(this.value, '<?php echo admin_url('admin-ajax.php'); ?>')" placeholder="Digite o nome ou código de barras para procurar">
                                     </div>
                                 </div>
                             </li>
@@ -554,6 +554,8 @@ if( $gateways ) {
             success: function(data){
                 insert_product_on_list_order(product_id, product_name, product_ref, product_qty, product_unt_val, product_type);
                 show_subtotal_curr_order(order_id);
+                
+                jQuery('#search_by_ref, #search_by_name').val('');
             }
         });
     }
