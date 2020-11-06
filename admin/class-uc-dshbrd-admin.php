@@ -787,7 +787,7 @@ class Uc_Dshbrd_Admin {
 		
 		// Customer data
 		$customer 		= get_userdata($order->customer_id);
-		$customer_name 	= $customer->display_name;
+		$customer_name 	= $customer->first_name . ' ' . $customer->last_name;
 		$customer_email = $customer->user_email;
 		
 		/**
