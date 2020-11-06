@@ -59,7 +59,8 @@ class Uc_Dshbrd_Admin {
 		add_action('init', array($this, 'customer_custom_category_product'));
 
 		# REGISTERING AJAX ACTIONS
-		add_action('wp_ajax_product_by_name_or_ref', array($this, 'product_by_name_or_ref')); // executed when logged in
+		add_action('wp_ajax_product_by_ref', array($this, 'product_by_ref')); // executed when logged in
+		add_action('wp_ajax_product_by_name', array($this, 'product_by_name')); // executed when logged in
 		add_action('wp_ajax_service_by_name_or_ref', array($this, 'service_by_name_or_ref')); // executed when logged in
 		add_action('wp_ajax_search_customer', array($this, 'search_customer')); // executed when logged in
 		add_action('wp_ajax_add_product_and_update_order', array($this, 'add_product_and_update_order')); // Executed whe logged in
@@ -93,6 +94,7 @@ class Uc_Dshbrd_Admin {
 		 */
 
 		wp_enqueue_style('bootstrap-css', 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css', array(), $this->version, 'all');
+		wp_enqueue_style('uikit', plugin_dir_url( __FILE__ ) . 'css/uikit.min.css', array(), '3.5.9', 'all');
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/uc-dshbrd-admin.css', array(), $this->version, 'all' );
 
 	}
@@ -153,32 +155,16 @@ class Uc_Dshbrd_Admin {
 	 * @param $string = name or ref;
 	 * @since 1.0.0
 	 */
-	public function product_by_name_or_ref($string)
+	public function product_by_ref()
 	{
 		// Search and return product by ID, Name or Ref;
 		$s = $_POST['string'];
-		$type_search = $_POST['s_type'];
 		
 		if (empty($s)) :
-			echo 'Termo de busca não fornecido.';
-			exit();
+			die('Termo de busca não fornecido.');
 		endif;
-		
-		$args = array(
-			'post_type'		=> 'product',
-			's'				=> $s,
-			'tax_query'		=> array(
-				'relation'	=> 'and',
-				array(
-					'taxonomy'		=> 'type-products',
-					'field'			=> 'slug',
-					'terms'			=> array('servico'),
-					'operator'		=> 'NOT IN'
-				),
-			),
-		);
 
-		$args_meta = array(
+		$args = array(
 			'post_type'		=> 'product',
 			'meta_query'	=> array(
 				array(
@@ -187,12 +173,7 @@ class Uc_Dshbrd_Admin {
 				),
 			),
 		);
-
-		if ($type_search == 'barcode') : 
-			$query = new WP_Query($args_meta);
-		else :
-			$query = new WP_Query($args);
-		endif;
+		$query = new WP_Query($args);
 
 		if ($query->have_posts()) :
 			while($query->have_posts()) :
@@ -248,6 +229,97 @@ class Uc_Dshbrd_Admin {
 				<script>
 					add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), '<?php echo $id; ?>', '<?php echo $title; ?>', '<?php echo $ref; ?>', jQuery('#product-<?php echo $id ?>').val(), '<?php echo ($promo_price != '' ? $promo_price : $price); ?>', '<?php echo (!empty($item_type_slug) ? $item_type_slug : 'produto' ) ?>');
 				</script>
+				<?php
+			endwhile;
+		
+		else :
+			echo '<p class="text-reset text-center">Não encontramos item(s) relacionados a busca: <b>'. $s .'</b></p>';			
+		endif;
+		
+		// End json call
+		die();
+	}
+
+	/**
+	 * Busca produtos por nome. Essa função é chamada por uma requisição ajax
+	 * @param $string = name or ref;
+	 * @since 1.2.0
+	 */
+	public function product_by_name()
+	{
+		// Search and return product by ID, Name or Ref;
+		$s = $_POST['string'];
+		
+		if (empty($s)) :
+			die('Termo de busca não fornecido.');
+		endif;
+		
+		$args = array(
+			'post_type'		=> 'product',
+			's'				=> $s,
+			'tax_query'		=> array(
+				'relation'	=> 'and',
+				array(
+					'taxonomy'		=> 'type-products',
+					'field'			=> 'slug',
+					'terms'			=> array('servico'),
+					'operator'		=> 'NOT IN'
+				),
+			),
+		);
+		$query = new WP_Query($args);
+
+		if ($query->have_posts()) :
+			while($query->have_posts()) :
+				$query->the_post();
+				$id 			= get_the_ID();
+				$title 			= get_the_title($id);
+				$thumb 			= get_the_post_thumbnail($id, 'small', array('style' => 'width: 100%; height: 100%; border-radius: 8px;'));
+				$price 			= get_post_meta($id, '_regular_price', true);
+				$promo_price 	= get_post_meta($id, '_sale_price', true);
+				$stock 			= get_post_meta($id, '_stock_status', true);
+				$ref 			= get_post_meta($id, '_sku', true);
+				$item_type_name = '';
+				$item_type_slug = '';
+
+				foreach ($terms_of_type as $type) :
+					$item_type_name = $type->name;
+					$item_type_slug = $type->slug;
+				endforeach;
+				?>
+				<div class="col-12 card" product-id="<?php echo $id; ?>" product-name="<?php echo $title; ?>" product-ref="<?php echo $ref; ?>" product-price="<?php echo ($promo_price != '' ? $promo_price : $price); ?>" product-type="<?php echo (!empty($item_type_slug) ? $item_type_slug : 'produto' ) ?>">
+					<div class="row">
+						<div class="col-3 border-right">
+							<?php echo $thumb; ?>
+						</div>
+						<!-- /End Thumb -->
+
+						<div class="col-8 d-flex flex-column justify-content-center">
+							<div class="mb-2 pb-2 border-bottom">
+								<h5><?php echo $title; ?></h5>
+							</div>
+							<div class="row justify-content-center">
+								<div class="col-4 d-flex align-items-center">
+									<h3 class=""><span class="badge badge-secondary mr-2"><?php echo 'R$' . $price ?></span></h3>
+								</div>
+								<div class="col-8 p-0 d-flex align-items-center">
+									<span class="badge badge-secondary mr-2"><?php echo $stock ?></span>
+									<span class="badge badge-secondary mr-2"><?php echo '#' . $id ?></span>
+									<span class="badge badge-secondary mr-2"><?php echo 'REF.' . $ref ?></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group d-flex flex-column align-items-center col-1 m-0 p-0 border-left">
+							<button class="btn btn-light" onclick="increment_number(jQuery(this).siblings('input'));"><i class="fas fa-plus"></i></button>
+							<input type="text" id="product-<?php echo $id; ?>" name="item_qty" class="form-control text-center mt-2 mb-2 col-9" placeholder="1 - 10" value="1" style="max-height: 40px;">
+							<button class="btn btn-light" onclick="decrement_number(jQuery(this).siblings('input'));"><i class="fas fa-minus"></i></button>
+						</div>
+						<!-- /End Informations -->
+					</div>
+				</div>
+				<button type="button" id="" class="btn btn-primary btn-lg mt-1 mb-4 mr-1 float-right" onclick="add_product_on_order(jQuery('#the_order_id').attr('data-order-id'), jQuery(this).prev().attr('product-id'), jQuery(this).prev().attr('product-name'), jQuery(this).prev().attr('product-ref'), jQuery('#product-<?php echo $id ?>').val(), jQuery(this).prev().attr('product-price'), jQuery(this).prev().attr('product-type'))"><i class="fas fa-cart-plus"></i> Adicionar ao Pedido</button>
+				<!-- /End template card product item -->
 				<?php
 			endwhile;
 		

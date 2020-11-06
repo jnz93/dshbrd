@@ -88,14 +88,29 @@ if( $gateways ) {
                     <div id="search-product" class="tab-pane col-12 card fade show active" role="tabpanel" aria-labelledby="order-product-tab">
 
                         <h4 class="mb-4">Procurar Produto(s)</h4>
-                        <form id="add_product" action="">
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="form-check-label mb-2" for="name_ref">Nome do produto / Ref.</label>
-                                    <input type="text" id="name_ref" name="name_ref" class="form-control col-12" onchange="looking_for_product(this.value, '<?php echo admin_url('admin-ajax.php'); ?>')" placeholder="Digite o nome ou código de barras para procurar">
+                        <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+                            <li><a href="#" class="switch-type-search">Automática(Leitor de C.B)</a></li>
+                            <li><a href="#" class="switch-type-search">Manual(Busca por nome)</a></li>
+                        </ul>
+
+                        <ul class="uk-switcher uk-margin">
+                            <li>
+                                <div class="form-row">
+                                    <div class="form-group col-12">
+                                        <label class="form-check-label mb-2" for="name_ref">Leitor de Código de Barras</label>
+                                        <input type="text" id="name_ref" name="name_ref" class="form-control col-12" onchange="looking_for_product_by_ref(this.value, '<?php echo admin_url('admin-ajax.php'); ?>')" placeholder="Digite o nome ou código de barras para procurar">
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </li>
+                            <li>
+                                <div class="form-row">
+                                    <div class="form-group col-12">
+                                        <label class="form-check-label mb-2" for="name_ref">Procura manual</label>
+                                        <input type="text" id="name_ref" name="name_ref" class="form-control col-12" onchange="looking_for_product_by_name(this.value, '<?php echo admin_url('admin-ajax.php'); ?>')" placeholder="Digite o nome ou código de barras para procurar">
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                     <!-- /End #add_product -->
 
@@ -414,26 +429,12 @@ if( $gateways ) {
 
 <script type="text/javascript">
 
-    function looking_for_product(value, ajaxUrl)
+    function looking_for_product_by_ref(value, ajaxUrl)
     {
-        jQuery('#add_product').submit(function(e)
-        {
-            e.preventDefault();
-        });
-
         var type = '',
             hasSpace = value.indexOf(" "),
             pattern = /^[0-9]\d{8,13}$/,
             resultPatt = pattern.test(value);
-        
-        if (resultPatt)
-        {
-            type = 'barcode';
-        }
-        else
-        {
-            type = 'normal';
-        }
 
         var admin_url_ajax = ajaxUrl,
             wrapper_results = jQuery('#wrapper_results'),
@@ -442,9 +443,8 @@ if( $gateways ) {
             type: 'POST',
             url: admin_url_ajax,
             data: {
-                action: 'product_by_name_or_ref',
-                string: value,
-                s_type: type
+                action: 'product_by_ref',
+                string: value
             },
             beforeSend: function()
             {
@@ -459,6 +459,38 @@ if( $gateways ) {
                 loader.hide().fadeOut();
             }
 
+        });
+    }
+
+    function looking_for_product_by_name(value, ajaxUrl)
+    {
+        jQuery(this).submit(function(e)
+        {
+            e.preventDefault();
+        });
+
+        var admin_url_ajax = ajaxUrl,
+            wrapper_results = jQuery('#wrapper_results'),
+            loader = jQuery('#lds-loader');
+        jQuery.ajax({
+            type: 'POST',
+            url: admin_url_ajax,
+            data: {
+                action: 'product_by_name',
+                string: value,
+            },
+            beforeSend: function()
+            {
+                loader = jQuery('#lds-loader')
+                loader.show().fadeIn();
+            },
+            success: function(data){
+                wrapper_results.html(data);
+            },
+            complete: function()
+            {
+                loader.hide().fadeOut();
+            }
         });
     }
 
@@ -833,7 +865,7 @@ if( $gateways ) {
     */
     function cleanResultContent()
     {
-        jQuery('#order-service, #order-product').click(function()
+        jQuery('#order-service, #order-product, .switch-type-search').click(function()
         {
             jQuery('#wrapper_results').html('');
         });
