@@ -542,22 +542,62 @@ if( $gateways ) {
     // Ajax for add to cart
     function add_product_on_order(order_id, product_id, product_name, product_ref, product_qty, product_unt_val, product_type)
     {
-        jQuery.ajax({
-            type: 'POST',
-            url: '<?php echo admin_url('admin-ajax.php'); ?>',
-            data: {
-                action: 'add_product_and_update_order',
-                order_id: order_id,
-                item_id: product_id,
-                item_qtd: product_qty,
-            },
-            success: function(data){
-                insert_product_on_list_order(product_id, product_name, product_ref, product_qty, product_unt_val, product_type);
-                show_subtotal_curr_order(order_id);
-                
-                jQuery('#search_by_ref, #search_by_name').val('');
+        var sameItemOnList = check_product_list(product_id);
+            jQuery.ajax({
+                type: 'POST',
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                data: {
+                    action: 'add_product_and_update_order',
+                    order_id: order_id,
+                    item_id: product_id,
+                    item_qtd: product_qty,
+                },
+                success: function(data){
+                    if (sameItemOnList == 0){
+                        insert_product_on_list_order(product_id, product_name, product_ref, product_qty, product_unt_val, product_type);
+                    }
+                    else
+                    {
+                        var elQty   = jQuery('#prod-'+ product_id).find('.item-qty'),
+                            qty     = parseInt(elQty.text()),
+                            newQty  = qty + 1;
+                        elQty.text(newQty);
+
+                        var elPrice = jQuery('#prod-'+ product_id).find('.item-price'),
+                            elTotal = jQuery('#prod-'+ product_id).find('.item-total'),
+                            price   = parseFloat(elPrice.text()),
+                            total   = price * newQty;
+                        elTotal.text(total);
+                    }
+
+                    show_subtotal_curr_order(order_id);
+                    jQuery('#search_by_ref, #search_by_name').val('');
+                }
+            });
+    }
+
+    // function check_product_list - Testa se o item já está na lista de produtos
+    function check_product_list(product_id)
+    {
+        var items = jQuery('#order_products tbody').children('tr'),
+            isValid = 0;
+
+        items.each(function(i)
+        {
+            var currItem = jQuery(this)
+                currItemId = currItem.attr('product-id');
+
+            if(currItemId == product_id)
+            {
+                isValid += 1;
+            }
+            else
+            {
+                isValid += 0;
             }
         });
+
+        return isValid;
     }
 
     // Ajax add customer on order
@@ -621,7 +661,7 @@ if( $gateways ) {
     {
         var valTotal = calc_total_item(qty, valUnt);
 
-        let itemToAdd = '<tr class="d-flex" style="font-size: 11px;"><td class="col-5" style="font-weight: 700;">'+ name +'</td><td class="col-2">'+ ref +'</td><td class="col-1">'+ qty +'</td><td class="col-2">'+ valUnt +'</td><td class="amount_item col-2">'+ valTotal +'</td></tr>';
+        let itemToAdd = '<tr class="d-flex" id="prod-'+ id +'" product-id="'+ id +'" product-name="'+ name +'" product-ref="'+ ref +'" product-qty="'+ qty +'" style="font-size: 11px;"><td class="col-5" style="font-weight: 700;">'+ name +'</td><td class="col-2">'+ ref +'</td><td class="item-qty col-1">'+ qty +'</td><td class="item-price col-2">'+ valUnt +'</td><td class="item-total col-2">'+ valTotal +'</td></tr>';
 
         if (itemType == 'servico')
         {
@@ -696,7 +736,7 @@ if( $gateways ) {
     */
     function total_services_on_order()
     {
-        var totalOnTable = jQuery('#order_services tbody tr td.amount_item');
+        var totalOnTable = jQuery('#order_services tbody tr td.item-total');
 
         var sum = 0.0;
         totalOnTable.each(function(){
@@ -716,7 +756,7 @@ if( $gateways ) {
     */
     function sum_total_products_added()
     {
-        var valuesOnTable = jQuery('#order_products tbody tr td.amount_item');
+        var valuesOnTable = jQuery('#order_products tbody tr td.item-total');
 
         var sumTotal = 0.0;
         valuesOnTable.each(function(){
